@@ -80,7 +80,7 @@ std::string get_line()
                     // Can't seem to change this so making both do the same thing.
                     case 0x08:
                     case 0x7F:
-                    line_position --;
+                    line_position = line_position ? line_position - 1 : 0;
                     command_line.erase(line_position);
                     break;
 
