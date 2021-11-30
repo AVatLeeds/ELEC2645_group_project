@@ -21,8 +21,10 @@
 #define BACKSPACE       "\x08"
 #define ERASE_IN_LINE   "\x1B[K"
 #define ERASE_TO_EOL    "\x1B[K"
+#define ERASE_LINE      "\x1B[2K"
 #define CURSOR_HOME     "\x1B[0;0H"
 #define CURSOR_POS(x, Y)    "\x1B[%d;%dH", (X), (Y)
+#define LINE_HOME       "\x1B[0G" // horizontal move absolute
 
 char * prompt = "lineEd: ";
 unsigned int prompt_length = 8;
@@ -35,17 +37,6 @@ void LineEd_set_prompt(const char * custom_prompt)
     prompt_length = i - 1; //check this
 }
 
-/*
-void clear_line()
-{
-    std::cout << CURSOR_HOME;
-    std::cout << ERASE_TO_EOL;
-    cursor_column = 0;
-    command_line.clear();
-    line_position = 0;
-}
-*/
-
 enum states {NORMAL, ESC_SEQ, CTRL_SEQ};
 
 states state = NORMAL;
@@ -57,6 +48,18 @@ unsigned int cursor_row = 0;
 
 char in_char;
 
+void visual_erase()
+{
+    std::cout << ERASE_LINE;
+    std::cout << LINE_HOME; 
+}
+
+void visual_re_print()
+{
+    visual_erase();
+    std::cout << command_line;
+}
+
 std::string get_line()
 {
     while ((in_char = getchar()))
@@ -64,7 +67,7 @@ std::string get_line()
         switch (state)
         {
             case NORMAL:
-            if ((in_char > 0x20 && in_char < 0x7E) || in_char == 0x09)
+            if ((in_char > 0x1F && in_char < 0x7F) || in_char == 0x09)
             {
                 command_line.insert(line_position, {in_char});
                 line_position ++;
@@ -73,19 +76,26 @@ std::string get_line()
             {
                 switch (in_char)
                 {
-                    case 0x7F:
-                    command_line.erase(line_position);
-                    break;
-
+                    // For some reason backspace sends character 127 (delete) instead of 8 (backspace).
+                    // Can't seem to change this so making both do the same thing.
                     case 0x08:
+                    case 0x7F:
                     line_position --;
                     command_line.erase(line_position);
                     break;
 
                     case 0x0A:
                     case 0x0D:
-
                     return command_line;
+                    break;
+
+                    case 0x03:
+                    return 0;
+                    break;
+
+                    default:
+                    printf("%c", in_char);
+                    break;
                 }
             }
             break;
@@ -98,5 +108,7 @@ std::string get_line()
 
             break;
         }
+
+        visual_re_print();
     }
 }
