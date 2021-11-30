@@ -25,9 +25,9 @@ int main()
         {
             enable_raw_mode();
         }
-        catch(std::runtime_error error)
+        catch(std::runtime_error * error)
         {
-            std::cerr << error.what() << std::endl;
+            std::cerr << error->what() << std::endl;
         }
         break;
 
@@ -36,9 +36,9 @@ int main()
         {
             enable_raw_mode();
         }
-        catch(std::runtime_error error)
+        catch(std::runtime_error * error)
         {
-            std::cerr << error.what() << std::endl;
+            std::cerr << error->what() << std::endl;
         }
         break;
 
@@ -48,9 +48,9 @@ int main()
             enable_raw_mode();
             disable_raw_mode();
         }
-        catch(std::runtime_error error)
+        catch(std::runtime_error * error)
         {
-            std::cerr << error.what() << std::endl;
+            std::cerr << error->what() << std::endl;
         }
         break;
 
@@ -61,9 +61,9 @@ int main()
             std::cout << get_line();
             disable_raw_mode();
         }
-        catch(std::runtime_error error)
+        catch(std::runtime_error * error)
         {
-            std::cerr << error.what() << std::endl;
+            std::cerr << error->what() << std::endl;
         }
         break;
 
