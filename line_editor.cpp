@@ -25,6 +25,8 @@
 #define CURSOR_HOME     "\x1B[0;0H"
 #define CURSOR_POS(x, Y)    "\x1B[%d;%dH", (X), (Y)
 #define LINE_HOME       "\x1B[0G" // horizontal move absolute
+#define CURSOR_LEFT     "\x1B[1D"
+#define CURSOR_RIGHT    "\x1B[1C"
 
 std::string prompt = "LineEd: "; 
 
@@ -67,71 +69,68 @@ std::string get_line()
     std::cout << prompt;
     while ((in_char = getchar()))
     {
-        switch (state)
+        if ((in_char > 0x1F && in_char < 0x7F) || in_char == 0x09)
         {
-            case NORMAL:
-            if ((in_char > 0x1F && in_char < 0x7F) || in_char == 0x09)
+            command_line.insert(line_position, {in_char});
+            line_position ++;
+        }
+        else
+        {
+            switch (in_char)
             {
-                command_line.insert(line_position, {in_char});
-                line_position ++;
-            }
-            else
-            {
-                switch (in_char)
+                // For some reason backspace sends character 127 (delete) instead of 8 (backspace).
+                // Can't seem to change this so making both do the same thing.
+                case 0x08:
+                case 0x7F:
+                line_position = line_position ? line_position - 1 : 0;
+                command_line.erase(line_position);
+                break;
+
+                case 0x0A:
+                case 0x0D:
+                return command_line;
+                break;
+
+                case 0x03:
+                return 0;
+                break;
+
+                case 0x1B:
+                in_char = getchar();
+                if (in_char == '[')
                 {
-                    // For some reason backspace sends character 127 (delete) instead of 8 (backspace).
-                    // Can't seem to change this so making both do the same thing.
-                    case 0x08:
-                    case 0x7F:
-                    line_position = line_position ? line_position - 1 : 0;
-                    command_line.erase(line_position);
-                    break;
+                    in_char = getchar();
+                    switch (in_char)
+                    {
+                        case 'A':
+                        /* code */
+                        break;
 
-                    case 0x0A:
-                    case 0x0D:
-                    return command_line;
-                    break;
+                        case 'B':
 
-                    case 0x03:
-                    return 0;
-                    break;
+                        break;
 
-                    case 0x1B:
-                    esq_seq.append({"\x1B"});
-                    state = ESC_SEQ;
-                    break;
+                        case 'C':
+                        line_position ++;
+                        std::cout << CURSOR_RIGHT;
+                        break;
 
-                    default:
-                    printf("%c", in_char);
-                    break;
+                        case 'D':
+                        line_position = line_position ? line_position - 1 : 0;
+                        std::cout << CURSOR_LEFT;
+                        break;
+                    
+                        default:
+
+                        break;
+                    }
                 }
-            }
-            break;
+                break;
 
-            case ESC_SEQ:
-            if (in_char == 0x5B)
-            {
-                esq_seq.clear();
-                ctrl_seq.append({"\x1B["});
-                state = CTRL_SEQ;
+                default:
+                printf("%c", in_char);
+                break;
             }
-            else if (in_char >= 0x20 && in_char <= 0x2F)
-            {
-                esq_seq.append({in_char});
-            }
-            else if (in_char >= 0x30 && in_char <= 0x7E)
-            {
-                esq_seq.append({in_char});
-                // deal with
-                esq_seq.clear();
-                state = NORMAL;
-            }
-            break;
-
-            case CTRL_SEQ:
-            
-
-            break;
         }
 
         visual_re_print();
