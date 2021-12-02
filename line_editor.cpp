@@ -26,22 +26,24 @@
 #define CURSOR_POS(x, Y)    "\x1B[%d;%dH", (X), (Y)
 #define LINE_HOME       "\x1B[0G" // horizontal move absolute
 
-char * prompt = "lineEd: ";
-unsigned int prompt_length = 8;
+std::string prompt = "LineEd: "; 
 
-void LineEd_set_prompt(const char * custom_prompt)
+/*void LineEd_set_prompt(const char * custom_prompt)
 {
     prompt = (char *)custom_prompt;
     unsigned int i = 0;
     while (prompt[i] != '\0') i ++;
     prompt_length = i - 1; //check this
-}
+}*/
 
 enum states {NORMAL, ESC_SEQ, CTRL_SEQ};
 
 states state = NORMAL;
 
 std::string command_line;
+std::string esq_seq;
+std::string ctrl_seq;
+
 unsigned int line_position = 0;
 unsigned int cursor_column = 0;
 unsigned int cursor_row = 0;
@@ -57,11 +59,12 @@ void visual_erase()
 void visual_re_print()
 {
     visual_erase();
-    std::cout << command_line;
+    std::cout << prompt << command_line;
 }
 
 std::string get_line()
 {
+    std::cout << prompt;
     while ((in_char = getchar()))
     {
         switch (state)
@@ -93,6 +96,11 @@ std::string get_line()
                     return 0;
                     break;
 
+                    case 0x1B:
+                    esq_seq.append({"\x1B"});
+                    state = ESC_SEQ;
+                    break;
+
                     default:
                     printf("%c", in_char);
                     break;
@@ -101,10 +109,27 @@ std::string get_line()
             break;
 
             case ESC_SEQ:
-
+            if (in_char == 0x5B)
+            {
+                esq_seq.clear();
+                ctrl_seq.append({"\x1B["});
+                state = CTRL_SEQ;
+            }
+            else if (in_char >= 0x20 && in_char <= 0x2F)
+            {
+                esq_seq.append({in_char});
+            }
+            else if (in_char >= 0x30 && in_char <= 0x7E)
+            {
+                esq_seq.append({in_char});
+                // deal with
+                esq_seq.clear();
+                state = NORMAL;
+            }
             break;
 
             case CTRL_SEQ:
+            
 
             break;
         }
