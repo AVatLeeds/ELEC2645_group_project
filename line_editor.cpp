@@ -25,10 +25,12 @@
 #define CURSOR_HOME     "\x1B[0;0H"
 #define CURSOR_POS(x, Y)    "\x1B[%d;%dH", (X), (Y)
 #define LINE_HOME       "\x1B[0G" // horizontal move absolute
+//#define CURSOR_TO_COLUMN(X) "\x1B["
 #define CURSOR_LEFT     "\x1B[1D"
 #define CURSOR_RIGHT    "\x1B[1C"
 
-std::string prompt = "LineEd: "; 
+std::string prompt = "LineEd: ";
+int prompt_length = 9; 
 
 /*void LineEd_set_prompt(const char * custom_prompt)
 {
@@ -58,10 +60,19 @@ void visual_erase()
     std::cout << LINE_HOME; 
 }
 
+/*
 void visual_re_print()
 {
     visual_erase();
     std::cout << prompt << command_line;
+}
+*/
+void visual_re_print()
+{
+    int lp = line_position;
+    visual_erase();
+    std::cout << prompt << command_line;
+    std::cout << "\x1B[" << lp + prompt_length << "G";
 }
 
 std::string get_line()
@@ -72,7 +83,8 @@ std::string get_line()
         if ((in_char > 0x1F && in_char < 0x7F) || in_char == 0x09)
         {
             command_line.insert(line_position, {in_char});
-            line_position ++;
+            line_position ++; 
+            visual_re_print();
         }
         else
         {
@@ -83,7 +95,8 @@ std::string get_line()
                 case 0x08:
                 case 0x7F:
                 line_position = line_position ? line_position - 1 : 0;
-                command_line.erase(line_position);
+                command_line.erase(line_position, 1);
+                visual_re_print();
                 break;
 
                 case 0x0A:
@@ -111,13 +124,19 @@ std::string get_line()
                         break;
 
                         case 'C':
-                        line_position ++;
-                        std::cout << CURSOR_RIGHT;
+                        if (line_position < command_line.length())
+                        {
+                          line_position ++;
+                          std::cout << CURSOR_RIGHT;
+                        }
                         break;
 
                         case 'D':
-                        line_position = line_position ? line_position - 1 : 0;
-                        std::cout << CURSOR_LEFT;
+                        if (line_position)
+                        {
+                          line_position --;
+                          std::cout << CURSOR_LEFT;
+                        }
                         break;
                     
                         default:
@@ -133,6 +152,6 @@ std::string get_line()
             }
         }
 
-        visual_re_print();
+        
     }
 }
