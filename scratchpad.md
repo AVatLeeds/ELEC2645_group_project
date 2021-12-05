@@ -53,3 +53,11 @@ from [https://vt100.net/docs/vt510-rm/chapter4.html](https://vt100.net/docs/vt51
             -   calculation functions
 -   disable raw mode
 -   return
+
+## Tokenizer specification
+
+-   a function
+-   takes the command line, a std::string, as the input argument
+-   returns a C++ linked list of tokens, where a token is:
+    -   each space separated item in the command line is a token
+    -   tokens can be numbers or command words
