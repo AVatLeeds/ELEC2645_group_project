@@ -34,18 +34,13 @@ void cursor_to_column(unsigned int column)
     std::cout << "\x1B[" << column << "G";
 }
 
-std::list<std::string> command_history;
-
+std::list<std::string> cmd_history;
+std::list<std::string>::iterator cmd_history_ptr = cmd_history.begin();
 std::string prompt = "-> ";
+std::string cmd_line;
 
-std::string command_line;
-std::string esq_seq;
-std::string ctrl_seq;
-
+bool edit_flag, insert_mode;
 unsigned int line_position = 0;
-unsigned int cursor_column = 0;
-unsigned int cursor_row = 0;
-
 char in_char;
 
 void visual_erase()
@@ -57,21 +52,32 @@ void visual_erase()
 void visual_re_print()
 {
     visual_erase();
-    std::cout << prompt << command_line;
+    std::cout << prompt << cmd_line;
     cursor_to_column(prompt.length() + 1  + line_position);
 }
 
 std::string get_line()
 {
-    command_line.clear();
+    edit_flag = false;
+    insert_mode = false;
+    cmd_history_ptr = cmd_history.end();
+    cmd_line.clear();
     std::cout << prompt;
+
     while ((in_char = getchar()))
     {
         if ((in_char > 0x1F && in_char < 0x7F) || in_char == 0x09)
         {
-            command_line.insert(line_position, {in_char});
-            line_position ++; 
-            //visual_re_print();
+            if (insert_mode && (line_position < cmd_line.length()))
+            {
+                cmd_line[line_position] = in_char;
+            }
+            else
+            {
+                cmd_line.insert(line_position, {in_char});
+            }
+            line_position ++;
+            edit_flag = true;
         }
         else
         {
@@ -82,16 +88,19 @@ std::string get_line()
                 case 0x08:
                 case 0x7F:
                 line_position = line_position ? line_position - 1 : 0;
-                command_line.erase(line_position, 1);
-                //visual_re_print();
+                cmd_line.erase(line_position, 1);
                 break;
 
                 case 0x0A:
                 case 0x0D:
                 line_position = 0;
                 visual_erase();
-                command_history.push_back(command_line);
-                return command_line;
+                if (edit_flag)
+                {
+                    cmd_history.push_back(cmd_line);
+                    cmd_history_ptr = cmd_history.end();
+                }
+                return cmd_line;
                 break;
 
                 case 0x03:
@@ -109,15 +118,25 @@ std::string get_line()
                     switch (in_char)
                     {
                         case 'A':
-                        /* code */
+                        if (cmd_history_ptr != cmd_history.begin())
+                        {
+                            cmd_history_ptr --;
+                            cmd_line = *cmd_history_ptr;
+                            line_position = cmd_line.length();
+                        }
                         break;
 
                         case 'B':
-
+                        if (cmd_history_ptr != (-- cmd_history.end()))
+                        {
+                            cmd_history_ptr ++;
+                            cmd_line = *cmd_history_ptr;
+                            line_position = cmd_line.length();
+                        }
                         break;
 
                         case 'C':
-                        if (line_position < command_line.length())
+                        if (line_position < cmd_line.length())
                         {
                           line_position ++;
                         }
@@ -135,14 +154,14 @@ std::string get_line()
                         break;
 
                         case 'F':
-                        line_position = command_line.length();
+                        line_position = cmd_line.length();
                         break;
 
                         case '2':
                         in_char = getchar();
                         if (in_char == '~')
                         {
-                            command_line.erase(line_position, 1);
+                            insert_mode = insert_mode ? false : true;
                         }
                         break;
 
@@ -150,7 +169,7 @@ std::string get_line()
                         in_char = getchar();
                         if (in_char == '~')
                         {
-                            // Insert
+                            cmd_line.erase(line_position, 1);
                         }
                         break;
 
