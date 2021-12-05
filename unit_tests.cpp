@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "terminal_control.h"
 #include "line_editor.h"
 
@@ -57,8 +58,15 @@ int main()
         case GET_LINE:
         try
         {
+            int run = 1;
+            std::string line;
             enable_raw_mode();
-            std::cout << get_line();
+            while (run)
+            {
+                line = get_line();
+                if (line == "END") run = 0;
+                std::cout << line << std::endl;
+            }
             disable_raw_mode();
         }
         catch(std::runtime_error * error)
