@@ -1,6 +1,6 @@
-//some important ANSII escape codes
 #include <iostream>
 #include <string>
+#include <list>
 
 //vvvv Received control codes vvvv
 #define LEFT_ARROW      "\x1B[D"
@@ -23,26 +23,20 @@
 #define ERASE_TO_EOL    "\x1B[K"
 #define ERASE_LINE      "\x1B[2K"
 #define CURSOR_HOME     "\x1B[0;0H"
-#define CURSOR_POS(x, Y)    "\x1B[%d;%dH", (X), (Y)
+#define CURSOR_POS(X, Y)    "\x1B["#X";"#Y"H"
 #define LINE_HOME       "\x1B[0G" // horizontal move absolute
-//#define CURSOR_TO_COLUMN(X) "\x1B["
+//#define CURSOR_TO_COLUMN(X) "\x1B["#X"G"
 #define CURSOR_LEFT     "\x1B[1D"
 #define CURSOR_RIGHT    "\x1B[1C"
 
-std::string prompt = "LineEd: ";
-int prompt_length = 9; 
-
-/*void LineEd_set_prompt(const char * custom_prompt)
+void cursor_to_column(unsigned int column)
 {
-    prompt = (char *)custom_prompt;
-    unsigned int i = 0;
-    while (prompt[i] != '\0') i ++;
-    prompt_length = i - 1; //check this
-}*/
+    std::cout << "\x1B[" << column << "G";
+}
 
-enum states {NORMAL, ESC_SEQ, CTRL_SEQ};
+std::list<std::string> command_history;
 
-states state = NORMAL;
+std::string prompt = "-> ";
 
 std::string command_line;
 std::string esq_seq;
@@ -60,23 +54,16 @@ void visual_erase()
     std::cout << LINE_HOME; 
 }
 
-/*
 void visual_re_print()
 {
     visual_erase();
     std::cout << prompt << command_line;
-}
-*/
-void visual_re_print()
-{
-    int lp = line_position;
-    visual_erase();
-    std::cout << prompt << command_line;
-    std::cout << "\x1B[" << lp + prompt_length << "G";
+    cursor_to_column(prompt.length() + 1  + line_position);
 }
 
 std::string get_line()
 {
+    command_line.clear();
     std::cout << prompt;
     while ((in_char = getchar()))
     {
@@ -84,7 +71,7 @@ std::string get_line()
         {
             command_line.insert(line_position, {in_char});
             line_position ++; 
-            visual_re_print();
+            //visual_re_print();
         }
         else
         {
@@ -96,16 +83,22 @@ std::string get_line()
                 case 0x7F:
                 line_position = line_position ? line_position - 1 : 0;
                 command_line.erase(line_position, 1);
-                visual_re_print();
+                //visual_re_print();
                 break;
 
                 case 0x0A:
                 case 0x0D:
+                line_position = 0;
+                visual_erase();
+                command_history.push_back(command_line);
                 return command_line;
                 break;
 
                 case 0x03:
-                return 0;
+                line_position = 0;
+                visual_erase();
+                // find a good way to make ctrl c end the program
+                return {}; // an empty std::string
                 break;
 
                 case 0x1B:
@@ -127,7 +120,6 @@ std::string get_line()
                         if (line_position < command_line.length())
                         {
                           line_position ++;
-                          std::cout << CURSOR_RIGHT;
                         }
                         break;
 
@@ -135,7 +127,47 @@ std::string get_line()
                         if (line_position)
                         {
                           line_position --;
-                          std::cout << CURSOR_LEFT;
+                        }
+                        break;
+
+                        case 'H':
+                        line_position = 0;
+                        break;
+
+                        case 'F':
+                        line_position = command_line.length();
+                        break;
+
+                        case '2':
+                        in_char = getchar();
+                        if (in_char == '~')
+                        {
+                            command_line.erase(line_position, 1);
+                        }
+                        break;
+
+                        case '3':
+                        in_char = getchar();
+                        if (in_char == '~')
+                        {
+                            // Insert
+                        }
+                        break;
+
+                        case '5':
+                        in_char = getchar();
+                        if (in_char == '~')
+                        {
+                            // Page Up
+                        }
+                        
+                        break;
+
+                        case '6':
+                        in_char = getchar();
+                        if (in_char == '~')
+                        {
+                            // Page Down
                         }
                         break;
                     
@@ -151,7 +183,6 @@ std::string get_line()
                 break;
             }
         }
-
-        
+        visual_re_print();
     }
 }
