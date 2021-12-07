@@ -238,3 +238,4 @@ double effElectronE (double k , double me , double Eg) //combines the quadratic 
       return resultsb;
     }
 }
+ 
