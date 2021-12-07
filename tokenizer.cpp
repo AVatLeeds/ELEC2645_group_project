@@ -3,12 +3,54 @@
 #include <string>
 #include <list>
 #include "tokenizer.h"
+#include <map>
 
-enum token_type {SYMBOL, COMMAND_WORD, NUMBER, STRING, OPERATOR, SEPARATOR, COMMENT, UNMATCHED};
+enum token_type {COMMAND_WORD, NUMBER, OPERATOR, SEPARATOR};
 
-typedef enum {ADD, SUB, MUL, DIV, ABS, MOD, NOT, AND, OR, XOR, IF, FOR, DO, WHILE, DUP, SWAP, PUSH, POP, ROLL, PRINT, DEF} keyword_t;
+enum command_words
+{
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    ABS,
+    MOD,
+    NOT,
+    AND,
+    OR,
+    XOR,
+    IF,
+    FOR,
+    DO,
+    WHILE,
+    DUP,
+    SWAP,
+    PUSH,
+    POP,
+    ROLL,
+    PRINT,
+    DEF,
+    HELP,
+    QUIT
+};
 
-std::list<std::string> command_words = {"add", "sub", "mul", "div", "abs", "mod", "not", "and", "or", "xor", "if", "for", "do", "while", "dup", "swap", "push", "pop", "roll", "print", "def"};
+std::map<enum command_words, std::string, std::hash<int>> command_map
+{
+    {ADD, "add"},
+    {SUB, "sub"},
+    {MUL, "mul"},
+    {DIV, "div"},
+    (ABS, "abs"},
+    (MOD, "mod"},
+    (NOT, "not"},
+    (AND, "and"},
+    (OR, "or"},
+    (XOR, "xor"}
+};
+
+
+
+std::list<std::string> command_words = {"add", "sub", "mul", "div", "abs", "mod", "not", "and", "or", "xor", "if", "for", "do", "while", "dup", "swap", "push", "pop", "roll", "print", "def", "help", "quit"};
 
 typedef enum {ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION, SQUARE, SQUARE_ROOT, EQUAL, UNEQUAL, LESS_THAN, GREATER_THAN,LESS_THAN_OR_EQUAL, GREATER_THAN_OR_EQUAL, OPEN_EXPRESSION, CLOSE_EXPRESSION, OPEN_BLOCK, CLOSE_BLOCK, SURPRESS} operator_t;
 // things to add: arrays? assignment operator? bitwise logical operations? pointers?
@@ -20,10 +62,11 @@ typedef enum {SPACE, COMMA} separator_t;
 struct token_list_node
 {
   enum token_type is;
+  unsigned int length;
   unsigned int start;
   unsigned int end;
   std::string symbol;
-  std::string command_word;
+  enum command_words command_word;
   double number;
   std::string string;
 };
@@ -34,39 +77,39 @@ struct token_list_node
 /******************************************************************************/
 bool find_string(std::string command_line, struct token_list_node * token)
 {
-  unsigned int i = 0;
-  token->string.clear();
+    unsigned int i = 0;
+    token->string.clear();
 
 	while (i < command_line.length())
-  {
-		if (command_line[i] == '\"')
     {
+		if (command_line[i] == '\"')
+        {
 			token->start = i;
 			i ++;
 			while (i < command_line.length())
-      {
+            {
 				if (command_line[i] == '\"')
-        {
+                {       
 					token->end = i;
 					return 1;
 				}
-        token->string.append({command_line[i]});
+                token->string.append({command_line[i]});
 				i ++;
 			}
 			std::cerr << "Error: String missing closing quote marks." << std::endl;
 		}
 		else if (command_line[i] == '\'')
-    {
+        {
 			token->start = i;
 			i ++;
 			while (i < command_line.length())
-      {
+            {
 				if (command_line[i] == '\'')
-        {
+                {
 					token->end = i;
 					return 1;
 				}
-        token->string.append({command_line[i]});
+                token->string.append({command_line[i]});
 				i ++;
 			}
 			std::cerr << "Error: String missing closing quote mark." << std::endl;
@@ -82,34 +125,129 @@ bool find_string(std::string command_line, struct token_list_node * token)
 bool find_number(std::string command_line, struct token_list_node * token)
 {
 	unsigned int i = 0;
-  std::size_t chars_processed;
+    std::size_t chars_processed;
   
 	while (i < command_line.length())
-  {
-    if (('0' <= command_line[i]) && (command_line[i] < '8'))
     {
-      token->start = i;
-      try
-      {
-        token->number = std::stod(&command_line[i], &chars_processed);
-        token->end = i + chars_processed;
-        return 1;
-      }
-      catch (const std::invalid_argument * error)
-      {
-        std::cerr << "Error: Malformed number." << std::endl;
-      }
-      catch (const std::out_of_range * error)
-      {
-        std::cerr << "Error: Number out of range." << std::endl;
-      }
+        if (('0' <= command_line[i]) && (command_line[i] < '8'))
+        {
+            token->start = i;
+            try
+            {
+                token->number = std::stod(&command_line[i], &chars_processed);
+                token->end = i + chars_processed;
+                return 1;
+            }
+            catch (const std::invalid_argument * error)
+            {
+                std::cerr << "Error: Malformed number." << std::endl;
+            }
+            catch (const std::out_of_range * error)
+            {
+                std::cerr << "Error: Number out of range." << std::endl;
+            }
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
-void tokenize(std::string command_line, std::list<struct token_list_node> * token_list)
+unsigned int match_only_word(std::string in_string, std::string to_match)
 {
+    unsigned int i;
+    if (to_match.length() > in_string.length())
+    {
+        return 0;
+    }
+    for (i = 0; i < to_match.length(); i ++)
+    {
+        if (to_match[i] != in_string[i])
+        {
+            return 0;
+        }
+    }
+    i ++;
+    if ((i == in_string.length()) || !isalpha(in_string[i]))
+    {
+        return -- i;
+    }
+    return 0;
+}
+
+/******************************************************************************/
+/**********KEYWORDS************************************************************/
+/******************************************************************************/
+bool find_command_words(std::string command_line, std::list<struct token_list_node> * token_list)
+{
+    unsigned int i = 0;
+    std::list<std::string>::iterator words_iter = command_words.begin();
+    struct token_list_node node;
+    unsigned int length;
+    unsigned int greatest_length = 0;
+    // this is CRUSTY. Please fix
+    unsigned int index = 0;
+    unsigned int index_of_greatest_length;
+    
+    // traverse to first alphabetic character
+    while ((i < command_line.length()) && !isalpha(i))
+    {
+        i ++;
+    }
+    // iterate over the command words
+    for (words_iter = command_words.begin(); words_iter != command_words.end(); words_iter ++)
+    {
+        //attempt to find largest matching command word at this index
+        length = match_only_word(command_line.substr(i), *words_iter);
+        if (length > greatest_length)
+        {
+            greatest_length = length;
+            index_of_greatest_length = index;
+        }
+        index ++;
+    }
+    i += (greatest_length + 1);
+    // couldn't find any command words here
+    if (greatest_length = 0)
+    {
+        return 0;
+    }
+    // largest possible command word found
+    else
+    {
+        node.is = COMMAND_WORD;
+        node.length = greatest_length;
+        node.command_word = (enum command_words)index;
+        token_list->push_back(node);
+        find_command_words(command_line.substr(i), token_list);
+        return 1;
+    } 
+}
+
+std::list<struct token_list_node> tokenize(std::string command_line)
+{
+    std::list<struct token_list_node> token_list;
+    unsigned int i = 0;
+    struct token_list_node node;
+
+    while (command_line[i] == ' ')
+    {
+        i ++;
+    }
+
+    if (find_number(command_line.substr(i), &node))
+    {
+        token_list.push_back(node);
+        i += node.lenght;
+        i ++;
+    }
+    else if (find_command_word(command_line.substr(i), &node))
+    {
+        token_list.push_back(node);
+        i += node.length;
+        i ++;
+    }
+
+
+
   std::string place_holder;
 
   int j = 0;
