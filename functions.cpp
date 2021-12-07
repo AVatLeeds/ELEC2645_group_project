@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <complex>
+#include "functions.h"
 
 #define PLANK 6.626e-34
 
@@ -36,12 +37,12 @@ double pow (double a , double b) //power function
 
 double mod (double a , double b) //modulus function 
 {
-    return a % b;
+    return (int)a % (int)b; //cast a and b
 }
 
 double abs (double a) //absolute function
 {
-    return abs(a)
+    return abs(a);
 }
 
 //for the bool function we use unsigned integers for simplicity
@@ -68,7 +69,7 @@ double NOR (double a , double b) //boolean NOR function
 
 double XOR (double a , double b) //boolean XOR function
 {
-    return ((unsigned int)a ^ (unsigned int))b);
+    return ((unsigned int)a ^ (unsigned int)b);
 }
 
 double NAND (double a , double b) //boolean NAND function
@@ -85,7 +86,7 @@ double react (double f , double c) //complex reactance function
 double reluct (double f, double l) //complex reluctance function
 {
     std::complex<double> j(0.0, 1.0);
-    return imag(j * 2 * M_PI * f * l); //returns the imaginary value (as oppose to the resistance)
+    return imag(j * 2.0 * M_PI * f * l); //returns the imaginary value (as oppose to the resistance)
 }
 
 double power_IV (double i , double v) //power function
@@ -175,7 +176,7 @@ double resist_parallel (double r1, double r2)
 
 double freq_T (double t) //frequency and time functions
 {
-    return 1/t
+    return 1/t;
 }
 
 double time_F (double f)
@@ -190,18 +191,20 @@ double freq_VH (double v, double h) //wavespeed divided by wavelength
 
 double  freq_W (double w) //angular frequency
 {
-    return ((w) / (2 * M_PI))
+    return ((w) / (2 * M_PI));
 }
 
 double OscillFreq (double l, double c) //frequency of oscillation using capactiance and inductance
 {
-    return (1 / (2 * M_PI * (sqrt(L * C))))
+    return (1 / (2 * M_PI * (sqrt(l * c))));
 }
 
+/*
 double HeadorTails (double ) //heads or tails function WIP
 {
     random
 }
+*/
 
 
 double quadratForm1 (double a , double b , double c) //quadratic formula function, first solution
