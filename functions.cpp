@@ -76,17 +76,6 @@ double NAND (double a , double b) //boolean NAND function
     return !((unsigned int)a & (unsigned int)b);
 }
 
-double quadratForm1 (double a , double b , double c) //quadratic formula function, first solution
-{
-    return ((-b + sqrt(pow(b , 2) - 4 * a * c))/ 2 * a);
-}
-
-double quadratForm2 (double a , double b , double c) //quadratic formula function, second solution
-{
-    return ((-b - sqrt(pow(b , 2) - 4 * a * c))/ 2 * a);
-}
-
-
 double react (double f , double c) //complex reactance function
 {
     std::complex<double> j(0.0, 1.0);
@@ -99,22 +88,50 @@ double reluct (double f, double l) //complex reluctance function
     return imag(j * 2 * M_PI * f * l); //returns the imaginary value (as oppose to the resistance)
 }
 
-double electronE (double k, double me)
+double power (double v , double i) //power function
 {
-    return (pow((PLANK / (2 * M_PI) ), 2) * pow(k, 2)) / (2.0 * me);
+    return (v*i);
 }
 
-double effElectronE (double k , double me , double Eg)
+double volt (double i , double r) //voltage function
 {
-    double sol1 = quadratForm1(1/Eg, 1, -electronE(k , me));
-    double sol2 = quadratForm2(1/Eg, 1, -electronE(k , me));
+    return (i*r);
+}
 
-    if (sol1 < 0)
-    {   
-        return sol1;
-    }
-    if (sol2 < 0);
+double HeadorTails (double ) //heads or tails function WIP
+{
+    random
+}
+
+
+double quadratForm1 (double a , double b , double c) //quadratic formula function, first solution
+{
+    return ((-b + sqrt(pow(b , 2) - (4 * a * c)))/ (2 * a));
+}
+
+double quadratForm2 (double a , double b , double c) //quadratic formula function, second solution
+{
+    return ((-b - sqrt(pow(b , 2) - (4 * a * c)))/ (2 * a));
+}
+
+double electronE (double k, double me) //used to calculate the electron energy
+{
+  return (pow((PLANK / (2 * M_PI) ), 2) * pow(k, 2)) / (2.0 * me);
+
+  
+}
+
+double effElectronE (double k , double me , double Eg) //combines the quadratic formula and the fomula used to calculate the assumed energy to calculate actual energy with the bandgap
+{
+     double resultsa = quadratForm1((1.0/Eg), 1.0, -(electronE(k , me)));
+    double resultsb = quadratForm2((1.0/Eg), 1.0, -(electronE(k , me)));
+
+    if (resultsa >= 0)
     {
-        return sol2;
+      return resultsa;
+    }
+    if (resultsb >= 0)
+    {
+      return resultsb;
     }
 }
