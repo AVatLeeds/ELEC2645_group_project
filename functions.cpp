@@ -88,14 +88,114 @@ double reluct (double f, double l) //complex reluctance function
     return imag(j * 2 * M_PI * f * l); //returns the imaginary value (as oppose to the resistance)
 }
 
-double power (double v , double i) //power function
+double power_IV (double i , double v) //power function
 {
-    return (v*i);
+    return (i*v);
 }
 
-double volt (double i , double r) //voltage function
+double power_VR (double v , double r)
+{
+    return (pow(v , 2) / r);
+}
+
+double power_RI (double r , double i)
+{
+    return (r * (pow(i , 2)));
+}
+
+double curr_PR (double p, double r) //current functions
+{
+    return (sqrt(p / r));
+}
+
+double curr_PV (double p, double v)
+{
+    return (p / v);
+}
+
+double curr_VR (double v, double r)
+{
+    return (v / r);
+}
+
+double resis_VP (double v, double p) //resistance functions
+{
+    return (pow(v , 2)/ p);
+}
+
+double resis_PI (double p, double i)
+{
+    return (p / (pow(i , 2)));
+}
+
+double resis_VI (double v, double i)
+{
+    return (v / i);
+}
+
+double volt_IR (double i , double r) //voltage functions
 {
     return (i*r);
+}
+
+double volt_PI (double p , double i)
+{
+    return (p / i);
+}
+
+double volt_PR (double p , double r)
+{
+    return (sqrt(p * r));
+}
+
+double capacit_QV (double q, double v) //capacitance function
+{
+    return q / v;
+}
+
+double capacit_series (double c1, double c2) //circuit theory functions
+{
+    return (1/c1) + (1/c2);
+}
+
+double capacit_parallel (double c1, double c2)
+{
+    return c1 + c2;
+}
+
+double resist_series (double r1, double r2)
+{
+    return r1 + r2;
+}
+
+double resist_parallel (double r1, double r2)
+{
+    return (1/r1) + (1/r2);
+}
+
+double freq_T (double t) //frequency and time functions
+{
+    return 1/t
+}
+
+double time_F (double f)
+{
+    return 1/f;
+}
+
+double freq_VH (double v, double h) //wavespeed divided by wavelength
+{
+    return (v / h);
+}
+
+double  freq_W (double w) //angular frequency
+{
+    return ((w) / (2 * M_PI))
+}
+
+double OscillFreq (double l, double c) //frequency of oscillation using capactiance and inductance
+{
+    return (1 / (2 * M_PI * (sqrt(L * C))))
 }
 
 double HeadorTails (double ) //heads or tails function WIP
