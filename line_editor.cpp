@@ -106,8 +106,7 @@ std::string get_line()
                 case 0x03:
                 line_position = 0;
                 visual_erase();
-                // find a good way to make ctrl c end the program
-                return {}; // an empty std::string
+                throw std::runtime_error("Program terminated on ctrl-c.");
                 break;
 
                 case 0x1B:
