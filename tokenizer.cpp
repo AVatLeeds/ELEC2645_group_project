@@ -4,9 +4,44 @@
 #include <list>
 #include <map>
 #include "tokenizer.h"
-#include "functions_homogenised.h"
 
-unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list)
+std::map<std::string, struct command_info> command_map
+{
+	// arithmetic
+	{"add",			{&add,		"" }},
+	{"sub",			{&subtract,	"" }},
+	{"mul",			{&multiply,	"" }},
+	{"div",			{&divide,	"" }},
+	{"pow",			{&power,	"" }},	
+	{"mod",			{&modulus,	"" }},
+	{"abs",			{&absolute,	"" }}
+	/*
+	// logical
+	{"and",			{&AND,		"" }},
+	{"or",			{&OR,		"" }},
+	{"not",			{&NOT,		"" }},
+	{"nor",			{&NOR,		"" }},
+	{"nand",		{&NAND,		"" }},
+	{"xor",			{&XOR,		"" }},
+	// stack manipulation
+	{"dup", 		{&dup,		"" }},
+	{"swap", 		{&swap,		"" }},
+	{"push", 		{&push,		"" }},
+	{"pop", 		{&pop,		"" }},
+	{"roll", 		{&roll,		"" }},
+	// system
+	{"cmd_list", 	{&cmd_list,	"" }},
+	{"help", 		{&help,		"" }},
+	{"quit", 		{&quit,		"" }},	
+	// other
+	{"react",		{&react,	"" }},
+	{"reluct",		{&reluct,	"" }},
+	{"power_IV",	{&power_IV,	"" }},
+	{"power_VR",	{&power_VR,	"" }}
+	*/
+};
+
+unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx)
 {
 	unsigned int i = 0;
 	struct token_list_node node;
@@ -22,8 +57,11 @@ unsigned int find_numbers(std::string command_line, std::list<struct token_list_
 			{
 				node.number = std::stod(&command_line[i], &chars_processed);
 				node.length = chars_processed;
+				i += (node.length + 1);
+				node.literal_string = command_line.substr(node.index, node.length); // for debug only
+				node.index += start_idx;
 				token_list->push_back(node);
-				if (find_numbers(command_line.substr(i + node.length + 1), token_list))
+				if (find_numbers(command_line.substr(i), token_list, i + start_idx))
 				{
 					return 1;
 				}
@@ -64,7 +102,7 @@ unsigned int match_only_word(std::string in_string, std::string to_match)
 	return 0;
 }
 
-unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list)
+unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx)
 {
 	unsigned int i = 0;
 	std::map<std::string, struct command_info>::iterator cmd_map_iter;
@@ -74,9 +112,13 @@ unsigned int find_command_words(std::string command_line, std::list<struct token
 	node.length = 0;
 		
 	// traverse to first alphabetic character
-	while ((i < command_line.length()) && !isalpha(i))
+	while ((i < command_line.length()) && !isalpha(command_line[i]))
 	{
 		i ++;
+	}
+	if (i == command_line.length())
+	{
+		return 1;
 	}
 	node.index = i;
 	// iterate over the command words
@@ -104,9 +146,14 @@ unsigned int find_command_words(std::string command_line, std::list<struct token
 	// largest possible command word found
 	else
 	{
+		node.literal_string = command_line.substr(node.index, (node.length + 1)); // for debug only
+		node.index += start_idx;
 		token_list->push_back(node);
-		find_command_words(command_line.substr(i), token_list);
-		return 1;
+		if (find_command_words(command_line.substr(i), token_list, i + start_idx))
+		{
+			return 1;
+		}
+		return 0;
 	} 
 }
 

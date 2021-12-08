@@ -20,15 +20,10 @@ enum operators
 	GREATER_THAN,
 	LESS_THAN_OR_EQUAL,
 	GREATER_THAN_OR_EQUAL,
-	OPEN_EXPRESSION,
-	CLOSE_EXPRESSION,
-	OPEN_BLOCK,
-	CLOSE_BLOCK,
-	SURPRES
 };
 // things to add: arrays? assignment operator? bitwise logical operations? pointers?
 
-std::list<std::string> operators = {"+", "-", "*", "/", "^", "_/", "=", "/=", "<", ">", "<=", ">=", "(", ")", "{", "}"};
+//std::list<std::string> operators = {"+", "-", "*", "/", "^", "_/", "=", "/=", "<", ">", "<=", ">=", "(", ")", "{", "}"};
 
 enum separators
 {
@@ -38,7 +33,7 @@ enum separators
 	CLOSE_COMMAND
 };
 
-std::list<std::string> separators = {"(", ")", "[", "]"};
+//std::list<std::string> separators = {"(", ")", "[", "]"};
 
 struct command_info
 {
@@ -46,39 +41,7 @@ struct command_info
 	std::string description;
 };
 
-std::map<std::string, struct command_info> command_map
-{
-	// arithmetic
-	{"add",			{&add,		"" }},
-	{"sub",			{&subtract,	"" }},
-	{"mul",			{&multiply,	"" }},
-	{"div",			{&divide,	"" }},
-	{"pow",			{&power,	"" }},	
-	{"mod",			{&modulus,	"" }},
-	{"abs",			{&absolute,	"" }},
-	// logical
-	{"and",			{&AND,		"" }},
-	{"or",			{&OR,		"" }},
-	{"not",			{&NOT,		"" }},
-	{"nor",			{&NOR,		"" }},
-	{"nand",		{&NAND,		"" }},
-	{"xor",			{&XOR,		"" }},
-	// stack manipulation
-	{"dup", 		{&dup,		"" }},
-	{"swap", 		{&swap,		"" }},
-	{"push", 		{&push,		"" }},
-	{"pop", 		{&pop,		"" }},
-	{"roll", 		{&roll,		"" }},
-	// system
-	{"cmd_list", 	{&cmd_list,	"" }},
-	{"help", 		{&help,		"" }},
-	{"quit", 		{&quit,		"" }},	
-	// other
-	{"react",		{&react,	"" }},
-	{"reluct",		{&reluct,	"" }},
-	{"power_IV",	{&power_IV,	"" }},
-	{"power_VR",	{&power_VR,	"" }}
-};
+extern std::map<std::string, struct command_info> command_map;
 
 enum token_type
 {
@@ -100,8 +63,8 @@ struct token_list_node
 	enum separators sep;
 };
 
-unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list);
-unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list);
+unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
+unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
 
 //unsigned int RP_tokenize(std::string command_line, std::list<struct token_list_node> * token_list);
 
