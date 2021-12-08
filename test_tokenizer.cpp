@@ -4,6 +4,7 @@
 #include "terminal_control.h"
 #include "line_editor.h"
 #include "tokenizer.h"
+#include "RP_parser.h"
 
 std::string command_line;
 unsigned int i;
@@ -78,7 +79,15 @@ int main()
 						}
 						else
 						{
-							std::cout << "Oops, that didn't work." << std::endl;
+							std::cout << "Oops, tokenizing didn't work." << std::endl;
+						}
+						if (RP_parser(&token_list_1))
+						{
+							print_token_list(token_list_1);
+						}
+						else
+						{
+							std::cout << "Oops, parsing didn't work." << std::endl;
 						}
 						// do some shit
 						//std::cout << command_expression << std::endl;
