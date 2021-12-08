@@ -63,8 +63,10 @@ struct token_list_node
 	enum separators sep;
 };
 
-unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
-unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
+//unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
+//unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
+
+unsigned int tokenize(std::string line, std::list<struct token_list_node> * token_list);
 
 //unsigned int RP_tokenize(std::string command_line, std::list<struct token_list_node> * token_list);
 

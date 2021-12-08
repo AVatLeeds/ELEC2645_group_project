@@ -19,22 +19,23 @@ void print_token_list(std::list<struct token_list_node> list)
 	std::list<struct token_list_node>::iterator list_iter = list.begin();
 	while (list_iter != list.end())
 	{
-		std::cout << list_iter->index << ":" << list_iter->literal_string << " -> ";
-		list_iter ++;
-	}
-	std::cout << std::endl;
-}
-void print_number_token_list(std::list<struct token_list_node> list)
-{
-	std::list<struct token_list_node>::iterator list_iter = list.begin();
-	while (list_iter != list.end())
-	{
-		std::cout << list_iter->index << ":" << list_iter->number << " -> ";
-		list_iter ++;
-	}
-	std::cout << std::endl;
-}
+		switch (list_iter->is)
+		{
+			case COMMAND_WORD:
+			std::cout << list_iter->literal_string << " -> ";
+			break;
 
+			case NUMBER:
+			std::cout << list_iter->number << " -> ";
+			break;
+
+			default:
+			break;
+		}		
+		list_iter ++;
+	}
+	std::cout << std::endl;
+}
 
 int main()
 {
@@ -71,18 +72,9 @@ int main()
 					{
 						index_closed = i;
 						command_expression = command_line.substr((index_opened + 1), (index_closed - index_opened - 1));
-						if (find_command_words(command_expression, &token_list_1, 0))
+						if (tokenize(command_expression, &token_list_1))
 						{
 							print_token_list(token_list_1);
-						}
-						else
-						{
-							std::cout << "Oops, that didn't work." << std::endl;
-						}
-						token_list_1.clear();
-						if (find_numbers(command_expression, &token_list_1, 0))
-						{
-							print_number_token_list(token_list_1);
 						}
 						else
 						{
