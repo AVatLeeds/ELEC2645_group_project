@@ -206,6 +206,75 @@ double HeadorTails (double ) //heads or tails function WIP
 }
 */
 
+double circle_Area(double r) //area of circle function
+{
+  return (M_PI * (pow(r , 2)));
+}
+
+double circle_Circum(double r) //circumference of circle function
+{
+  return (2 * M_PI * r);
+}
+
+double triangle_OH(double o, double h) //angle between opposite and hypotenuse
+{
+  return (asin(o / h) * (180 / M_PI)); 
+}
+
+double triangle_AH(double a, double h) //angle between adjacent and hypotenuse
+{
+  return (acos(a / h) * (180 / M_PI)); 
+}
+
+double triangle_OA(double o, double a) //angle between opposite and adjacent
+{
+  return (atan(o / a) * (180 / M_PI)); 
+}
+
+double triangle_SH(double s_angle, double h) //opposite length (with hypotenuse)
+{
+  return (sin(s_angle) * h);
+}
+
+double triangle_CH(double c_angle, double h) //adjacent length
+{
+  return (cos(c_angle) * h);
+}
+
+double triangle_TH(double t_angle, double a) //opposite length (with adjacent)
+{
+  return (sin(t_angle) * a);
+}
+
+double triangle_Area(double b, double h)
+{
+  return (0.5 * b * h);
+}
+
+double sin_calc(double d)
+{
+  return sin(d);
+}
+
+double cos_calc(double d)
+{
+  return cos(d);
+}
+
+double tan_calc(double d)
+{
+  return sin(d);
+}
+
+double log_calc(double a)
+{
+  return log(a);
+}
+
+double base2_log_calc(double a)
+{
+  return (log_calc(a)/log_calc(2));
+}
 
 double quadratForm1(double a, double b, double c) //quadratic formula function, first solution
 {
