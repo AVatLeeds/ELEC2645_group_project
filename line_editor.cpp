@@ -89,6 +89,7 @@ std::string get_line()
                 case 0x7F:
                 line_position = line_position ? line_position - 1 : 0;
                 cmd_line.erase(line_position, 1);
+				edit_flag = true;
                 break;
 
                 case 0x0A:
@@ -169,6 +170,7 @@ std::string get_line()
                         if (in_char == '~')
                         {
                             cmd_line.erase(line_position, 1);
+							edit_flag = true;
                         }
                         break;
 
