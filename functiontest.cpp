@@ -12,6 +12,7 @@ double ans;
 typedef enum test_names
 {
     SUM,
+    POWER,
     REACTANCE,
     RELUCTANCE,
     CAPACITANCE_SERIES,
@@ -20,11 +21,13 @@ typedef enum test_names
     OSCILLATING_FREQUENCY,
     QUADRATIC_FORMULA1,
     ELECTRON_ENERGY,
-    EFFECTIVE_ELECTRON_ENERGY
+    EFFECTIVE_ELECTRON_ENERGY,
+    BASE_TWO_LOG,
+    CIRCLE_AREA
 
 } test_t;
 
-test_t test = QUADRATIC_FORMULA1; //Change the test case here
+test_t test = EFFECTIVE_ELECTRON_ENERGY; //Change the test case here
 
 int main()
 {
@@ -34,6 +37,13 @@ int main()
         a = 2;
         b = 5;
         ans = sum(a, b);
+        std::cout << ans;
+        break;
+
+    case POWER:
+        a = 2;
+        b = 5;
+        ans = power(a, b);
         std::cout << ans;
         break;
 
@@ -98,6 +108,18 @@ int main()
         b = 6.1037e-32; //effective mass (kg)
         c = 2.272e-19; //band gap energy (J)
         ans = effElectronE(a, b, c);
+        std::cout << ans;
+        break;
+
+    case BASE_TWO_LOG:
+        a = 16;
+        ans = base2_log_calc(a);
+        std::cout << ans;
+        break;
+
+    case CIRCLE_AREA:
+        a = 4;
+        ans = circle_Area(a);
         std::cout << ans;
         break;
     }
