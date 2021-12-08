@@ -2,13 +2,13 @@
 #include <list>
 #include <cmath>
 #include <complex>
-#include "functions.h"
+#include "functions_homogenised.h"
 
 #define PLANK 6.626e-34
 
 #define BINARY_OP(X) double a = stack->back(); \
     stack->pop_back(); \
-    double b = stack->back(); \ 
+    double b = stack->back(); \
     stack->pop_back(); \
     stack->push_back(a X b);
 
@@ -22,11 +22,6 @@ double unary_op()
 double binary_op()
 {
     
-}
-
-double pop(std::list<double> * stack)
-{
-
 }
 
 void add (std::list<double> * stack) //addition function
