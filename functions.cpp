@@ -25,7 +25,7 @@ double div(double a, double b) //division function
     return a / b;
 }
 
-double pow(double a, double b) //power function
+double power(double a, double b) //power function
 {
     return pow(a, b);
 }
@@ -96,12 +96,12 @@ double power_IV(double i, double v) //power function
 
 double power_VR(double v, double r)
 {
-    return (pow(v, 2) / r);
+    return (power(v, 2) / r);
 }
 
 double power_RI(double r, double i)
 {
-    return (r * (pow(i, 2)));
+    return (r * (power(i, 2)));
 }
 
 double curr_PR(double p, double r) //current functions
@@ -121,12 +121,12 @@ double curr_VR(double v, double r)
 
 double resis_VP(double v, double p) //resistance functions
 {
-    return (pow(v, 2) / p);
+    return (power(v, 2) / p);
 }
 
 double resis_PI(double p, double i)
 {
-    return (p / (pow(i, 2)));
+    return (p / (power(i, 2)));
 }
 
 double resis_VI(double v, double i)
@@ -208,7 +208,7 @@ double HeadorTails (double ) //heads or tails function WIP
 
 double circle_Area(double r) //area of circle function
 {
-  return (M_PI * (pow(r , 2)));
+  return (M_PI * (power(r , 2)));
 }
 
 double circle_Circum(double r) //circumference of circle function
@@ -283,7 +283,7 @@ double quadratForm1(double a, double b, double c) //quadratic formula function, 
         std::cout << "Invalid Inputs";
     }
     */
-    return ((-b + sqrt(pow(b, 2) - (4 * a * c))) / (2 * a));
+    return ((-b + sqrt(power(b, 2) - (4 * a * c))) / (2 * a));
 }
 
 double quadratForm2(double a, double b, double c) //quadratic formula function, second solution
@@ -293,12 +293,12 @@ double quadratForm2(double a, double b, double c) //quadratic formula function, 
         std::cout << "Invalid Inputs";
     }
     */
-    return ((-b - sqrt(pow(b, 2) - (4 * a * c))) / (2 * a));
+    return ((-b - sqrt(power(b, 2) - (4 * a * c))) / (2 * a));
 }
 
 double electronE(double k, double me) //used to calculate the electron energy
 {
-    return (pow((PLANK / (2 * M_PI)), 2) * pow(k, 2)) / (2.0 * me);
+    return (pow((PLANK / (2 * M_PI)), 2) * power(k, 2)) / (2.0 * me);
 
 
 }
