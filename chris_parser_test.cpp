@@ -1,10 +1,9 @@
 //g++ -Wall functions_homogenised.cpp tokenizer.cpp chris_parser_test.cpp -o chris_code_test.exec
 
-
 #include <iostream>
 #include <list>
 #include<string> 
-//#include "parser.h"
+#include "parser.h"
 #include <cmath>
 #include "tokenizer.h"
 
@@ -51,7 +50,6 @@ my_iterator=tokens.begin();//reinitialize the iterator to the first token
 }
 int *NumbArr=new int[NumbCount];//initialize dynamic array for numbs
 int *OpArr=new int[OpCount++];//operators array with an extra place for the last number which is always 1
-OpArr[OpCount++]=1;
 while (my_iterator!=tokens.end()){
   if (my_iterator->is==NUMBER){
     NumbArr[NumbLoc]=my_iterator->number;
@@ -70,9 +68,6 @@ while (my_iterator!=tokens.end()){
         break;
       }case DIV:{
         OpArr[OpLoc]=5;
-        if (my_iterator++->number==0.0){
-          //error
-        }
         break;
       }case POW:{
         OpArr[OpLoc]=6;
@@ -81,6 +76,7 @@ while (my_iterator!=tokens.end()){
     }OpLoc++;
   }
   my_iterator++;
+  OpArr[OpCount++]=1;
 }my_iterator=tokens.begin();
 //find out the numbers the operation is applied to
 for (int i=0;i<OpLoc;i++){
@@ -106,8 +102,14 @@ for (int i=0;i<OpLoc;i++){
       break;
     }
     case 5:{
+      if(b==0;){
+        return 0
+        //error
+      }else{
       out=a/b;
       NumbArr[location++]=out;
+      }
+      
       break;
     }case 4:{
       out=a*b;
@@ -127,12 +129,13 @@ for (int i=0;i<OpLoc;i++){
     }
 
   }
-}
 delete []OpArr;
 delete []NumbArr;
 OpArr=nullptr;
 NumbArr=nullptr;
 }
+
+
 
 int main()
 {
