@@ -66,9 +66,6 @@ while (my_iterator!=tokens.end()){
         break;
       }case DIV:{
         OpArr[OpLoc]=5;
-        if (my_iterator++->number==0.0){
-          //error
-        }
         break;
       }case POW:{
         OpArr[OpLoc]=6;
@@ -103,8 +100,14 @@ for (int i=0;i<OpLoc;i++){
       break;
     }
     case 5:{
+      if(b==0;){
+        return 0
+        //error
+      }else{
       out=a/b;
       NumbArr[location++]=out;
+      }
+      
       break;
     }case 4:{
       out=a*b;
