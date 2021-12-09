@@ -44,8 +44,8 @@ while (my_iterator!=tokens.end()){
   my_iterator++;//count how many numbers entered by user
 }
 my_iterator=tokens.begin();//reinitialize the iterator to the first token
-if(OpCount++!=NumbCount){
-  return 0;
+//if(OpCount++!=NumbCount){
+ // return 0;
   //error
   //checks that there is always one operator less than there are numbers
 }
