@@ -337,22 +337,50 @@ void stack_class::elec_rest_mass()
 }
 
 // other
+
+unsigned int quadratic_form_1(double a, double b, double c, double * result)
+{
+	double discriminant = pow(b, 2.0) - (4.0 * a * c);
+	if (discriminant < 0.0)
+	{
+		return 0;
+	}
+	else
+	{
+		*result = (-b + sqrt(discriminant)) / (2.0 * a);
+		return 1;
+	}
+}
+
 void stack_class::quadratic_formula_1()
 {
 	double a, b, c;
 	if (get_args({&a, &b, &c}))
 	{
-		double discriminant = pow(b, 2.0) - (4.0 * a * c);
-		if (discriminant < 0.0)
+		double result;
+		if (quadratic_form_1(a, b, c, &result))
 		{
-			status = "Error: Discriminant less than zero. Complex root (we don't do these yet).";
+			stack.push_back(result);
+			status = "OK";
+			return;
 		}
-		else
-		{
-			stack.push_back((-b + sqrt(discriminant)) / (2.0 * a));
-		}
+		status = "Error: Discriminant less than zero. Complex root (we don't do these yet).";
 	}
 	status = "Error: Not enough operands on stack.";
+}
+
+unsigned int quadratic_form_2(double a, double b, double c, double * result)
+{
+	double discriminant = pow(b, 2.0) - (4.0 * a * c);
+	if (discriminant < 0.0)
+	{
+		return 0;
+	}
+	else
+	{
+		*result = (-b - sqrt(discriminant)) / (2.0 * a);
+		return 1;
+	}
 }
 
 void stack_class::quadratic_formula_2()
@@ -360,17 +388,21 @@ void stack_class::quadratic_formula_2()
 	double a, b, c;
 	if (get_args({&a, &b, &c}))
 	{
-		double discriminant = pow(b, 2.0) - (4.0 * a * c);
-		if (discriminant < 0.0)
+		double result;
+		if (quadratic_form_2(a, b, c, &result))
 		{
-			status = "Error: Discriminant less than zero. Complex root (we don't do these yet).";
+			stack.push_back(result);
+			status = "OK";
+			return;
 		}
-		else
-		{
-			stack.push_back((-b - sqrt(discriminant)) / (2.0 * a));
-		}
+		status = "Error: Discriminant less than zero. Complex root (we don't do these yet).";
 	}
 	status = "Error: Not enough operands on stack.";
+}
+
+double electron_Energy(double k, double m_e)
+{
+	return (pow(REDUCED_PLANK, 2) * pow(k, 2)) / (2.0 * m_e);
 }
 
 void stack_class::electron_E()
@@ -378,7 +410,45 @@ void stack_class::electron_E()
 	double k, m_e;
 	if (get_args({&k, &m_e}))
 	{
-		stack.push_back((pow(REDUCED_PLANK, 2) * pow(k, 2)) / (2.0 * m_e));
+		stack.push_back(electron_Energy(k, m_e));
+		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
+
+void stack_class::eff_electron_E()
+{
+	double k, m_e, Eg;
+	if (get_args({&k, &m_e, &Eg}))
+	{
+		double result_1, result_2;
+		if (quadratic_form_1((1 / Eg), 1, -(electron_Energy(k, m_e)), &result_1))
+		{
+			if (quadratic_form_2((1 / Eg), 1, -(electron_Energy(k, m_e)), &result_2))
+			{
+				if (result_1 >= 0.0)
+				{
+					stack.push_back(result_1);
+					status = "OK";
+					return;
+				}
+				else if (result_2 >= 0.0)
+				{
+					stack.push_back(result_2);
+					status = "OK";
+					return;
+				}
+				else
+				{
+					status = "Error: Both results were negative.";
+					return;
+				}
+			}
+		}
+		status = "Error: Discriminant less than zero. Complex root (we don't do these yet).";
+		return;
+	}
+	status = "Error: Not enough operands on stack.";
+}
+		
