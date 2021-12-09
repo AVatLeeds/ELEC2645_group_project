@@ -9,12 +9,10 @@ double mult(double a, double b); //multiplication function
 
 double div(double a, double b); //division function
 
-double pow(double a, double b); //power function
+double power(double a, double b); //power function
 
 /*double root (double a , double b) //root function , unused it is easier to do power at the moment, can implement later?
-{
-    return pow(a,1/b);
-} */
+*/
 
 double mod(double a, double b); //modulus function 
 
@@ -85,6 +83,34 @@ double OscillFreq(double l, double c); //frequency of oscillation using capactia
 /*
 double HeadorTails (double ) //heads or tails function WIP
 */
+
+double circle_Area(double r); //area of circle function
+
+double circle_Circum(double r); //circumference of circle function
+
+double triangle_OH(double o, double h); //angle between opposite and hypotenuse
+
+double triangle_AH(double a, double h); //angle between adjacent and hypotenuse
+
+double triangle_OA(double o, double a); //angle between opposite and adjacent
+
+double triangle_SH(double s_angle, double h); //opposite length (with hypotenuse)
+
+double triangle_CH(double c_angle, double h); //adjacent length
+
+double triangle_TH(double t_angle, double a); //opposite length (with adjacent)
+
+double triangle_Area(double b, double h);
+
+double sin_calc(double d);
+
+double cos_calc(double d);
+
+double tan_calc(double d);
+
+double log_calc(double a);
+
+double base2_log_calc(double a);
 
 double quadratForm1(double a, double b, double c); //quadratic formula function, first solution
 
