@@ -2,7 +2,12 @@
 #include <list>
 #include<string> 
 #include "parser.h"
-#include "cmath"
+#include <cmath>
+#include "tokenizer.h"
+
+
+std::list<struct token_list_node> token_list;
+struct token_list_node node;
 
 int NumbCount=0;
 int NumbLoc=0;
@@ -37,19 +42,18 @@ while (my_iterator!=tokens.end()){
 }
 my_iterator=tokens.begin();//reinitialize the iterator to the first token
 //if(OpCount++!=NumbCount){
-  //return 0;
+ // return 0;
   //error
   //checks that there is always one operator less than there are numbers
 }
 int *NumbArr=new int[NumbCount];//initialize dynamic array for numbs
 int *OpArr=new int[OpCount++];//operators array with an extra place for the last number which is always 1
-OpArr[OpCount++]=1;
 while (my_iterator!=tokens.end()){
   if (my_iterator->is==NUMBER){
-    NumbArr[NumbLoc]=my_iterator->NUMBER;
+    NumbArr[NumbLoc]=my_iterator->number;
     NumbLoc++;
   }else if(my_iterator->is==OPERATOR){
-    switch (my_iterator->OPERATOR)//find what operator is used and assign a number to the array
+    switch (my_iterator->op)//find what operator is used and assign a number to the array
     {
       case ADD:{
         OpArr[OpLoc]=2;
@@ -62,7 +66,7 @@ while (my_iterator!=tokens.end()){
         break;
       }case DIV:{
         OpArr[OpLoc]=5;
-        if (my_iterator++->Number==0.0){
+        if (my_iterator++->number==0.0){
           //error
         }
         break;
@@ -73,6 +77,7 @@ while (my_iterator!=tokens.end()){
     }OpLoc++;
   }
   my_iterator++;
+  OpArr[OpCount++]=1;
 }my_iterator=tokens.begin();
 //find out the numbers the operation is applied to
 for (int i=0;i<OpLoc;i++){
@@ -119,7 +124,6 @@ for (int i=0;i<OpLoc;i++){
     }
 
   }
-}
 delete []OpArr;
 delete []NumbArr;
 OpArr=nullptr;
