@@ -5,14 +5,6 @@
 #include <cmath>
 #include "tokenizer.h"
 
-
-int NumbCount=0;
-int NumbLoc=0;
-int OpLoc=0;
-int OpCount=0;
-double out;
-double a,b;
-
 void max_array(const double array[], int n,int &max,int &location)
 {
   max=array[0];
@@ -29,6 +21,13 @@ void max_array(const double array[], int n,int &max,int &location)
 
 double parser(std::list<struct token_list_node> tokens)
 {
+	int NumbCount=0;
+	int NumbLoc=0;
+	int OpLoc=0;
+	int OpCount=0;
+	double out;
+	double a,b;
+
   std::list<struct token_list_node>::iterator my_iterator;
 
 my_iterator=tokens.begin();
