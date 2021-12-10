@@ -9,6 +9,14 @@ class stack_class {
 	public:
 	//constructors
 	stack_class();
+
+	unsigned int run_command(std::string);
+	
+	private:
+	unsigned int get_args(std::list<double *>);
+	unsigned int push(double value);
+	unsigned int pop(double * value);
+
 	// arithmetic
 	void add();
 	void subtract();
@@ -49,17 +57,12 @@ class stack_class {
 	void electron_E();
 	void eff_electron_E();
 
-	private:
-	unsigned int get_args(std::list<double *>);
-	unsigned int push(double value);
-	unsigned int pop(double * value);
-
 	std::string status;
 	std::list<double> stack;
 
 	struct command_info
 	{
-		void (stack_class::*function)();
+		void (stack_class:: * function)();
 		std::string description;
 	};
 

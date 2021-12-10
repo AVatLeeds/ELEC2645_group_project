@@ -13,6 +13,18 @@ stack_class::stack_class()
 
 }
 
+unsigned int stack_class::run_command(std::string command_string)
+{
+	std::map<std::string, struct command_info>::iterator cmd_map_iter;
+	cmd_map_iter = command_map.find(command_string); 
+	if (cmd_map_iter != command_map.end())
+	{
+		(this->*cmd_map_iter->second.function)(); // wtf is this syntax! Madness.
+		return 1;
+	}
+	return 0;
+}
+
 unsigned int stack_class::push(double value)
 {
 	stack.push_back(value);
