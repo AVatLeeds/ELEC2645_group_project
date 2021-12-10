@@ -235,6 +235,18 @@ unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> 
 			}
 		}
 	}
+
+	node.is = OPERATOR;
+	node.op = ADD;
+	std::list<struct token_list_node>::iterator list_iter = token_list->begin();
+	while (list_iter != token_list->end())
+	{
+		if ((list_iter->is == NUMBER) * ((++ list_iter)->is == NUMBER)) //generates a warning but has been done intentionally
+		{
+			token_list->insert(list_iter, node);
+		}
+	}
+
 	return 1;
 }
 

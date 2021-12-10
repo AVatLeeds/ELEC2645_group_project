@@ -10,6 +10,7 @@
 std::string command_line;
 bool run = true;
 std::list<struct token_list_section> token_lists;
+struct token_list_node node;
 
 
 int main()
@@ -26,6 +27,22 @@ int main()
 			std::list<struct token_list_section>::iterator lists_iter = token_lists.begin();
 			while (lists_iter != token_lists.end())
 			{
+				switch (lists_iter->type)
+				{
+					case EXPRESSION:
+					node.is = NUMBER;
+					node.number = parser(lists_iter->token_sub_list);
+					lists_iter->token_sub_list.clear();
+					lists_iter->token_sub_list.push_back(node);
+					break;
+
+					case COMMAND_SEQUENCE:
+
+					break;
+				
+					default:
+					break;
+				}
 				print_token_list(lists_iter->token_sub_list);
 				lists_iter ++;
 			}
