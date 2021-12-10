@@ -104,40 +104,8 @@ int main()
 			command_line = get_line();
 
 
-			for (i = 0; i < command_line.length(); i ++)
-			{
-				if (command_line[i] == '(')
-				{
-					bracket_count ++;
-					if (!expression_flag)
-					{
-						index_opened = i;
-					}
-					expression_flag = true;
-				}
-				if (command_line[i] == ')')
-				{
-					bracket_count --;
-					if (bracket_count == 0)
-					{
-						index_closed = i;
-						expression_flag = false;
-						command_expression = command_line.substr((index_opened + 1), (index_closed - index_opened - 1));
-						if (tokenize_infix(command_expression, &token_list_1))
-						{
-							print_token_list(token_list_1);
-							double result = parser(token_list_1);
-							//print_token_list(token_list_1);
-							std::cout << "Result: " << result << std::endl;
-						}
-						else
-						{
-							std::cout << "Oops, tokenizing didn't work." << std::endl;
-						}
-					}
-				}
-				token_list_1.clear();
-			}
+			tokenize(command_line, &token_list_1);
+
 		}
         disable_raw_mode();
     }

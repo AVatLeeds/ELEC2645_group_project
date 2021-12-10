@@ -5,6 +5,250 @@
 #include <map>
 #include "tokenizer.h"
 
+enum line_type {EXPRESSION, COMMAND_SEQUENCE};
+
+struct line_section
+{
+	enum line_type type;
+	std::string line;
+};
+
+unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * token_list)
+{
+	unsigned int i = 0;
+	std::size_t length;
+
+	struct token_list_node node;
+
+	while (i < line.length())
+	{
+		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
+		{
+			node.is = NUMBER;
+			try
+			{
+				node.number = std::stod(&line[i], &length);
+			}
+			catch (const std::invalid_argument & error)
+			{
+				std::cerr << "Error: Malformed number." << std::endl;
+				return 0;
+			}
+			catch (const std::out_of_range & error)
+			{
+				std::cerr << "Error: Number out of range." << std::endl;
+				return 0;
+			}
+			token_list->push_back(node);
+			i += length;
+		}
+		else if (isalpha(line[i]) || (line[i] == '_'))
+		{
+			node.is = COMMAND_WORD;
+			node.cmd_string.clear();
+			node.cmd_string.append({line[i]});
+			i ++;
+			while((isalpha(line[i]) || isdigit(line[i]) || (line[i] == '_')) && (i < line.length()))
+			{
+				node.cmd_string.append({line[i]});
+				i ++;
+			}
+			token_list->push_back(node);
+		}
+		else
+		{
+			switch (line[i])
+			{
+				case ' ':
+				i ++;
+				break;
+
+				default:
+				std::cerr << "Error: unidentified character " << line[i] << std::endl;
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> * token_list)
+{
+	unsigned int i = 0;
+	std::size_t length;
+
+	struct token_list_node node;
+
+	while (i < line.length())
+	{
+		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
+		{
+			node.is = NUMBER;
+			try
+			{
+				node.number = std::stod(&line[i], &length);
+			}
+			catch (const std::invalid_argument & error)
+			{
+				if (line[i] == '+')
+				{
+					node.is = OPERATOR;
+					node.op = ADD;
+					length = 1;
+				}
+				else if (line[i] == '-')
+				{
+					node.is = OPERATOR;
+					node.op = SUB;
+					length = 1;
+				}
+				else
+				{
+					std::cerr << "Error: Malformed number." << std::endl;
+					return 0;
+				}
+				
+			}
+			catch (const std::out_of_range & error)
+			{
+				std::cerr << "Error: Number out of range." << std::endl;
+				return 0;
+			}
+			token_list->push_back(node);
+			i += length;
+		}
+		else
+		{
+			switch (line[i])
+			{
+				case '*':
+				node.is = OPERATOR;
+				node.op = MUL;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '/':
+				node.is = OPERATOR;
+				node.op = DIV;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '^':
+				node.is = OPERATOR;
+				node.op = POW;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '(':
+				node.is = SEPARATOR;
+				node.sep = OPEN_EXPRESSION;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case ')':
+				node.is = SEPARATOR;
+				node.sep = CLOSE_EXPRESSION;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case ' ':
+				i ++;
+				break;
+			
+				default:
+				std::cerr << "Error: unidentified character " << line[i] << std::endl;
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+unsigned int tokenize(std::string line, std::list<struct token_list_node> * token_list)
+{
+	unsigned int i;
+	int bracket_count = 0;
+
+	struct line_section line_section;
+	line_section.type = COMMAND_SEQUENCE;
+
+	std::list<struct line_section> line_sections;
+	
+	for (i = 0; i < line.length(); i ++)
+	{
+		line_section.line.append({line[i]});
+
+		if (line[i] == '(')
+		{
+			if (!bracket_count)
+			{
+				line_section.line.pop_back();
+				if (i && !line_section.line.empty())
+				{
+					line_sections.push_back(line_section);
+					line_section.line.clear();
+				}
+				line_section.type = EXPRESSION;
+			}
+			bracket_count ++;
+		}
+		if (line[i] == ')')
+		{
+			bracket_count --;
+			if (bracket_count == 0)
+			{
+				line_section.line.pop_back();
+				line_sections.push_back(line_section);
+				line_section.line.clear();
+				line_section.type = COMMAND_SEQUENCE;
+			}
+		}
+	}
+
+	if (bracket_count > 0)
+	{
+		std::cerr << "Error: Missing closing bracket in mathematical expression." << std::endl;
+		return 0;
+	}
+	else if (bracket_count < 0)
+	{
+		std::cerr << "Error: Missing opening bracket in mathematical expression." << std::endl;
+		return 0;
+	}
+	else if (!line_section.line.empty())
+	{
+		line_sections.push_back(line_section);
+	}
+
+	std::list<struct line_section>::iterator line_sections_iter = line_sections.begin();
+	while (line_sections_iter != line_sections.end())
+	{
+		switch (line_sections_iter->type)
+		{
+			case EXPRESSION:
+			if (!tokenize_infix(line_sections_iter->line, token_list))
+			{
+				return 0;
+			}
+			break;
+
+			case COMMAND_SEQUENCE:
+			if (!tokenize_RP(line_sections_iter->line, token_list))
+			{
+				return 0;
+			}
+			break;
+		}
+		line_sections_iter ++;
+	}
+	return 1;
+}
+
 /*
 unsigned int match_only_word(std::string in_string, std::string to_match)
 {
@@ -185,159 +429,3 @@ unsigned int find_command_word(std::string line, std::list<struct token_list_nod
 	} 
 }
 */
-
-unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * token_list)
-{
-	unsigned int i = 0;
-	std::size_t length;
-
-	struct token_list_node node;
-
-	while (i < line.length())
-	{
-		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
-		{
-			node.is = NUMBER;
-			try
-			{
-				node.number = std::stod(&line[i], &length);
-			}
-			catch (const std::invalid_argument & error)
-			{
-				std::cerr << "Error: Malformed number." << std::endl;
-				return 0;
-			}
-			catch (const std::out_of_range & error)
-			{
-				std::cerr << "Error: Number out of range." << std::endl;
-				return 0;
-			}
-			token_list->push_back(node);
-			i += length;
-		}
-		else if (isalpha(line[i]) || (line[i] == '_'))
-		{
-			node.is = COMMAND_WORD;
-			node.cmd_string.clear();
-			node.cmd_string.append({line[i]});
-			i ++;
-			while((isalpha(line[i]) || isdigit(line[i]) || (line[i] == '_')) && (i < line.length()))
-			{
-				node.cmd_string.append({line[i]});
-				i ++;
-			}
-			token_list->push_back(node);
-		}
-		else
-		{
-			switch (line[i])
-			{
-				case ' ':
-				i ++;
-				break;
-
-				default:
-				std::cerr << "Error: unidentified character " << line[i] << std::endl;
-				return 0;
-			}
-		}
-	}
-	return 1;
-}
-
-unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> * token_list)
-{
-	unsigned int i = 0;
-	std::size_t length;
-
-	struct token_list_node node;
-
-	while (i < line.length())
-	{
-		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
-		{
-			node.is = NUMBER;
-			try
-			{
-				node.number = std::stod(&line[i], &length);
-			}
-			catch (const std::invalid_argument & error)
-			{
-				if (line[i] == '+')
-				{
-					node.is = OPERATOR;
-					node.op = ADD;
-					length = 1;
-				}
-				else if (line[i] == '-')
-				{
-					node.is = OPERATOR;
-					node.op = SUB;
-					length = 1;
-				}
-				else
-				{
-					std::cerr << "Error: Malformed number." << std::endl;
-					return 0;
-				}
-				
-			}
-			catch (const std::out_of_range & error)
-			{
-				std::cerr << "Error: Number out of range." << std::endl;
-				return 0;
-			}
-			token_list->push_back(node);
-			i += length;
-		}
-		else
-		{
-			switch (line[i])
-			{
-				case '*':
-				node.is = OPERATOR;
-				node.op = MUL;
-				token_list->push_back(node);
-				i++;
-				break;
-
-				case '/':
-				node.is = OPERATOR;
-				node.op = DIV;
-				token_list->push_back(node);
-				i++;
-				break;
-
-				case '^':
-				node.is = OPERATOR;
-				node.op = POW;
-				token_list->push_back(node);
-				i++;
-				break;
-
-				case '(':
-				node.is = SEPARATOR;
-				node.sep = OPEN_EXPRESSION;
-				token_list->push_back(node);
-				i++;
-				break;
-
-				case ')':
-				node.is = SEPARATOR;
-				node.sep = CLOSE_EXPRESSION;
-				token_list->push_back(node);
-				i++;
-				break;
-
-				case ' ':
-				i ++;
-				break;
-			
-				default:
-				std::cerr << "Error: unidentified character " << line[i] << std::endl;
-				return 0;
-			}
-		}
-	}
-	return 1;
-}
