@@ -202,12 +202,12 @@ unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * t
 			{
 				node.number = std::stod(&line[i], &length);
 			}
-			catch (const std::invalid_argument * error)
+			catch (const std::invalid_argument & error)
 			{
 				std::cerr << "Error: Malformed number." << std::endl;
 				return 0;
 			}
-			catch (const std::out_of_range * error)
+			catch (const std::out_of_range & error)
 			{
 				std::cerr << "Error: Number out of range." << std::endl;
 				return 0;
@@ -248,7 +248,7 @@ unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * t
 unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> * token_list)
 {
 	unsigned int i = 0;
-	unsigned int length = 0;
+	std::size_t length;
 
 	struct token_list_node node;
 
@@ -256,24 +256,33 @@ unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> 
 	{
 		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
 		{
-			node.is == NUMBER;
+			node.is = NUMBER;
 			try
 			{
-				node.number = std::stod(&line[i], (std::size_t *)length);
+				node.number = std::stod(&line[i], &length);
 			}
-			catch (const std::invalid_argument * error)
+			catch (const std::invalid_argument & error)
 			{
-				if ((line[i] == '-') || (line[i] == '+'))
+				if (line[i] == '+')
 				{
-					break;
+					node.is = OPERATOR;
+					node.op = ADD;
+					length = 1;
+				}
+				else if (line[i] == '-')
+				{
+					node.is = OPERATOR;
+					node.op = SUB;
+					length = 1;
 				}
 				else
 				{
 					std::cerr << "Error: Malformed number." << std::endl;
 					return 0;
 				}
+				
 			}
-			catch (const std::out_of_range * error)
+			catch (const std::out_of_range & error)
 			{
 				std::cerr << "Error: Number out of range." << std::endl;
 				return 0;
@@ -285,20 +294,6 @@ unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> 
 		{
 			switch (line[i])
 			{
-				case '+':
-				node.is = OPERATOR;
-				node.op = ADD;
-				token_list->push_back(node);
-				i++;
-				break;
-
-				case '-':
-				node.is = OPERATOR;
-				node.op = SUB;
-				token_list->push_back(node);
-				i++;
-				break;
-
 				case '*':
 				node.is = OPERATOR;
 				node.op = MUL;
@@ -315,7 +310,7 @@ unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> 
 
 				case '^':
 				node.is = OPERATOR;
-				node.op = DIV;
+				node.op = POW;
 				token_list->push_back(node);
 				i++;
 				break;

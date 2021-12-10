@@ -4,7 +4,6 @@
 #include <string>
 #include <list>
 #include <map>
-#include "functions_homogenised.h"
 
 enum operators
 {
