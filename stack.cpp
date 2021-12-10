@@ -21,7 +21,15 @@ unsigned int stack_class::run_command(std::string command_string)
 	if (cmd_map_iter != command_map.end())
 	{
 		(this->*cmd_map_iter->second.function)(); // wtf is this syntax! Madness.
-		return 1;
+		if (status == "OK")
+		{
+			return 1;
+		}
+		else
+		{
+			std::cout << status << std::endl;
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -29,6 +37,7 @@ unsigned int stack_class::run_command(std::string command_string)
 void stack_class::print_stack()
 {
 	std::list<double>::iterator stack_iter = stack.begin();
+	std::cout << "Stack: ";
 	while (stack_iter != stack.end())
 	{
 		std::cout << *stack_iter;
