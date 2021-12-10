@@ -273,7 +273,7 @@ void stack_class::swap()
 	status = "Error: Not enough operands on stack.";
 }
 
-void stack_class::push() // has no overall effect
+void stack_class::stack_push() // has no overall effect
 {
 	double a;
 	if(pop(&a))
@@ -284,7 +284,7 @@ void stack_class::push() // has no overall effect
 	status = "Error: Not enough operands on stack.";
 }
 
-void stack_class::pop() // has no overall effect
+void stack_class::stack_pop() // has no overall effect
 {
 	double a;
 	if(pop(&a))
