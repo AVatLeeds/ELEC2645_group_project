@@ -5,10 +5,12 @@
 #include "line_editor.h"
 #include "tokenizer.h"
 #include "RP_parser.h"
+#include "parser.h"
 
 std::string command_line;
 unsigned int i;
-int sqr_bracket_count = 0;
+int bracket_count = 0;
+bool expression_flag = false;
 unsigned int index_opened;
 unsigned int index_closed;
 std::string command_expression;
@@ -30,6 +32,60 @@ void print_token_list(std::list<struct token_list_node> list)
 			std::cout << list_iter->number << " -> ";
 			break;
 
+			case OPERATOR:
+			switch (list_iter->op)
+			{
+				case ADD:
+				std::cout << '+';
+				break;
+
+				case SUB:
+				std::cout << '-';
+				break;
+
+				case MUL:
+				std::cout << '*';
+				break;
+
+				case DIV:
+				std::cout << '/';
+				break;
+
+				case POW:
+				std::cout << '^';
+				break;
+			
+				default:
+				break;
+			}
+			std::cout << " -> ";
+			break;
+
+			case SEPARATOR:
+			switch (list_iter->sep)
+			{
+				case OPEN_EXPRESSION:
+				std::cout << '(';
+				break;
+
+				case CLOSE_EXPRESSION:
+				std::cout << ')';
+				break;
+
+				case OPEN_COMMAND:
+				std::cout << '[';
+				break;
+
+				case CLOSE_COMMAND:
+				std::cout << ']';
+				break;
+			
+				default:
+				break;
+			}
+			std::cout << " -> ";
+			break;
+
 			default:
 			break;
 		}		
@@ -46,56 +102,42 @@ int main()
 		while (run)
 		{
 			command_line = get_line();
+
+
 			for (i = 0; i < command_line.length(); i ++)
 			{
-				if (command_line[i] == '[')
+				if (command_line[i] == '(')
 				{
-					sqr_bracket_count ++;
-					if (sqr_bracket_count > 1)
-					{
-						std::cerr << "Error: invalid command expression. Command separators should not be nested." << std::endl;
-						throw std::runtime_error("Square-bracket matching error."); 
-					}
-					else
+					bracket_count ++;
+					if (!expression_flag)
 					{
 						index_opened = i;
 					}
+					expression_flag = true;
 				}
-				if (command_line[i] == ']')
+				if (command_line[i] == ')')
 				{
-					sqr_bracket_count --;
-					if (sqr_bracket_count < 0)
-					{
-						std::cerr << "Error: ']' without matching '['." << std::endl;
-						throw std::runtime_error("Square-bracket matching error.");
-					}
-					else
+					bracket_count --;
+					if (bracket_count == 0)
 					{
 						index_closed = i;
+						expression_flag = false;
 						command_expression = command_line.substr((index_opened + 1), (index_closed - index_opened - 1));
-						if (tokenize_RP(command_expression, &token_list_1))
+						if (tokenize_infix(command_expression, &token_list_1))
 						{
 							print_token_list(token_list_1);
+							double result = parser(token_list_1);
+							//print_token_list(token_list_1);
+							std::cout << "Result: " << result << std::endl;
 						}
 						else
 						{
 							std::cout << "Oops, tokenizing didn't work." << std::endl;
 						}
-						if (RP_parser(&token_list_1))
-						{
-							print_token_list(token_list_1);
-						}
-						else
-						{
-							std::cout << "Oops, parsing didn't work." << std::endl;
-						}
-						// do some shit
-						//std::cout << command_expression << std::endl;
-						sqr_bracket_count = 0;
 					}
 				}
+				token_list_1.clear();
 			}
-			token_list_1.clear();
 		}
         disable_raw_mode();
     }
