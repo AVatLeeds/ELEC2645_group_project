@@ -53,8 +53,8 @@ if(OpCount+1!=NumbCount)
   //error
   //checks that there is always one operator less than there are numbers
 
-double *NumbArr=new int[NumbCount];//initialize dynamic array for numbs
-double *OpArr=new int[NumbCount];//operators array with an extra place for the last number which is always 1
+double *NumbArr=new double[NumbCount];//initialize dynamic array for numbs
+double *OpArr=new double[NumbCount];//operators array with an extra place for the last number which is always 1
 while (my_iterator!=tokens.end())
 {
   if (my_iterator->is==NUMBER)
