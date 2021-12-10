@@ -87,9 +87,12 @@ std::string get_line()
                 // Can't seem to change this so making both do the same thing.
                 case 0x08:
                 case 0x7F:
-                line_position = line_position ? line_position - 1 : 0;
-                cmd_line.erase(line_position, 1);
-				edit_flag = true;
+                if (line_position)
+				{
+					line_position --;
+					cmd_line.erase(line_position, 1);
+					edit_flag = true;
+				}
                 break;
 
                 case 0x0A:
