@@ -13,7 +13,7 @@ int OpCount=0;
 double out;
 double a,b;
 
-void max_array(const int array[], int n,int &max,int &location)
+void max_array(const double array[], int n,int &max,int &location)
 {
   max=array[0];
   location=0;
@@ -53,8 +53,8 @@ if(OpCount+1!=NumbCount)
   //error
   //checks that there is always one operator less than there are numbers
 
-int *NumbArr=new int[NumbCount];//initialize dynamic array for numbs
-int *OpArr=new int[NumbCount];//operators array with an extra place for the last number which is always 1
+double *NumbArr=new int[NumbCount];//initialize dynamic array for numbs
+double *OpArr=new int[NumbCount];//operators array with an extra place for the last number which is always 1
 while (my_iterator!=tokens.end())
 {
   if (my_iterator->is==NUMBER)
