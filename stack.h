@@ -11,11 +11,11 @@ class stack_class {
 	stack_class();
 
 	unsigned int run_command(std::string);
-	
-	private:
-	unsigned int get_args(std::list<double *>);
 	unsigned int push(double value);
 	unsigned int pop(double * value);
+
+	private:
+	unsigned int get_args(std::list<double *>);
 
 	// arithmetic
 	void add();

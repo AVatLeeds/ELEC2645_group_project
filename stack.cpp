@@ -28,6 +28,7 @@ unsigned int stack_class::run_command(std::string command_string)
 unsigned int stack_class::push(double value)
 {
 	stack.push_back(value);
+	return 1;
 }
 
 unsigned int stack_class::pop(double * value)
