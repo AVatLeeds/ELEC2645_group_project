@@ -4,8 +4,6 @@
 #include <list>
 #include <map>
 
-
-
 class stack_class {
 
 	public:

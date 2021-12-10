@@ -57,6 +57,7 @@ void stack_class::add()
 	{
 		push(a + b);
 		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -70,6 +71,7 @@ void stack_class::subtract()
 		{
 			push(a - b);
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -84,6 +86,7 @@ void stack_class::multiply()
 		{
 			push(a * b);
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -102,6 +105,7 @@ void stack_class::divide()
 		{
 			push(a / b);
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -116,6 +120,7 @@ void stack_class::power()
 		{
 			push(pow(a, b));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -130,6 +135,7 @@ void stack_class::root()
 		{
 			push(pow(a, (1 / b)));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -144,6 +150,7 @@ void stack_class::modulus()
 		{
 			push((double)((int)a % (int)b));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -155,6 +162,7 @@ void stack_class::absolute()
 	if (pop(&a))
 	{
 		push(abs(a));
+		status = "OK";
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -169,6 +177,7 @@ void stack_class::AND()
 		{
 			push((double)((int)a & (int)b));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -183,6 +192,7 @@ void stack_class::OR()
 		{
 			push((double)((int)a | (int)b));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -194,6 +204,8 @@ void stack_class::NOT()
 	if (pop(&a))
 	{
 		push((double)(~(int)a));
+		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -207,6 +219,7 @@ void stack_class::NAND()
 		{
 			push((double)(~((int)a & (int)b)));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -221,6 +234,7 @@ void stack_class::NOR()
 		{
 			push((double)(~((int)a & (int)b)));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -235,6 +249,7 @@ void stack_class::XOR()
 		{
 			push((double)((int)a ^ (int)b));
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -254,6 +269,7 @@ void stack_class::dup()
 		push(a);
 		push(a);
 		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -268,6 +284,7 @@ void stack_class::swap()
 			push(b);
 			push(a);
 			status = "OK";
+			return;
 		}
 	}
 	status = "Error: Not enough operands on stack.";
@@ -280,6 +297,7 @@ void stack_class::stack_push() // has no overall effect
 	{
 		push(a);
 		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -290,6 +308,7 @@ void stack_class::stack_pop() // has no overall effect
 	if(pop(&a))
 	{
 		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -301,6 +320,7 @@ void stack_class::roll() // has no overall effect
 	{
 		stack.push_front(a);
 		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
