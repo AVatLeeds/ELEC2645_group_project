@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <cmath>
 #include "stack.h"
@@ -23,6 +24,20 @@ unsigned int stack_class::run_command(std::string command_string)
 		return 1;
 	}
 	return 0;
+}
+
+void stack_class::print_stack()
+{
+	std::list<double>::iterator stack_iter = stack.begin();
+	while (stack_iter != stack.end())
+	{
+		std::cout << *stack_iter;
+		if ((++ stack_iter) != stack.end())
+		{
+			std::cout << ", ";
+		}
+	}
+	std::cout << std::endl;
 }
 
 unsigned int stack_class::push(double value)

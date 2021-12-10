@@ -10,9 +10,10 @@ class stack_class {
 	//constructors
 	stack_class();
 
-	unsigned int run_command(std::string);
-	unsigned int push(double value);
-	unsigned int pop(double * value);
+	unsigned int	run_command(std::string);
+	void 			print_stack();
+	unsigned int	push(double value);
+	unsigned int	pop(double * value);
 
 	private:
 	unsigned int get_args(std::list<double *>);
@@ -85,7 +86,7 @@ class stack_class {
 		{"nor",			{&stack_class::NOR,		"Logical NOR of two number." }},
 		{"xor",			{&stack_class::XOR,		"Logical XOR of two number." }},
 		// stack manipulation
-		{"dup", 		{&stack_class::clear,		"Clears the stack." }},
+		{"clear", 		{&stack_class::clear,		"Clears the stack." }},
 		{"dup", 		{&stack_class::dup,			"Duplicates the last number on the stack." }},
 		{"swap", 		{&stack_class::swap,			"Swaps the last two numbers on the stack." }},
 		{"push", 		{&stack_class::stack_push,	"Pushed a number on the stack." }},

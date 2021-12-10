@@ -31,16 +31,7 @@ unsigned int RP_parser(std::list<struct token_list_node> * token_list)
 		}		
 		token_list_iter ++;
 	}
+	stack.print_stack();
 	token_list->clear();
-
-	struct token_list_node result;
-	result.is = NUMBER;
-	if (!stack.pop(&result.number))
-	{
-		std::cerr << "Error: No result on the stack !!" << std::endl;
-		return 0;
-	} 
-
-	token_list->push_back(result);
 	return 1;
 }
