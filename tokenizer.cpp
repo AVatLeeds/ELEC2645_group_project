@@ -189,7 +189,7 @@ unsigned int find_command_word(std::string line, std::list<struct token_list_nod
 unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * token_list)
 {
 	unsigned int i = 0;
-	unsigned int length = 0;
+	std::size_t length;
 
 	struct token_list_node node;
 
@@ -197,10 +197,10 @@ unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * t
 	{
 		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
 		{
-			node.is == NUMBER;
+			node.is = NUMBER;
 			try
 			{
-				node.number = std::stod(&line[i], (std::size_t *)length);
+				node.number = std::stod(&line[i], &length);
 			}
 			catch (const std::invalid_argument * error)
 			{
@@ -220,7 +220,8 @@ unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * t
 			node.is = COMMAND_WORD;
 			node.cmd_string.clear();
 			node.cmd_string.append({line[i]});
-			while(isalpha(line[i]) || isdigit(line[i]) || (line[i] == '_'))
+			i ++;
+			while((isalpha(line[i]) || isdigit(line[i]) || (line[i] == '_')) && (i < line.length()))
 			{
 				node.cmd_string.append({line[i]});
 				i ++;

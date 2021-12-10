@@ -338,7 +338,23 @@ void stack_class::roll() // has no overall effect
 	status = "Error: Not enough operands on stack.";
 }
 
-//constants
+// system
+void stack_class::cmd_list()
+{
+
+}
+
+void stack_class::help()
+{
+
+}
+
+void stack_class::quit()
+{
+	
+}
+
+// constants
 void stack_class::pi()
 {
 	stack.push_back(M_PI);
