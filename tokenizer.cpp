@@ -5,41 +5,27 @@
 #include <map>
 #include "tokenizer.h"
 
-std::map<std::string, struct command_info> command_map
+/*
+unsigned int match_only_word(std::string in_string, std::string to_match)
 {
-	// arithmetic
-	{"add",			{&add,		"" }},
-	{"sub",			{&subtract,	"" }},
-	{"mul",			{&multiply,	"" }},
-	{"div",			{&divide,	"" }},
-	{"pow",			{&power,	"" }},	
-	{"mod",			{&modulus,	"" }},
-	{"abs",			{&absolute,	"" }}
-	/*
-	// logical
-	{"and",			{&AND,		"" }},
-	{"or",			{&OR,		"" }},
-	{"not",			{&NOT,		"" }},
-	{"nor",			{&NOR,		"" }},
-	{"nand",		{&NAND,		"" }},
-	{"xor",			{&XOR,		"" }},
-	// stack manipulation
-	{"dup", 		{&dup,		"" }},
-	{"swap", 		{&swap,		"" }},
-	{"push", 		{&push,		"" }},
-	{"pop", 		{&pop,		"" }},
-	{"roll", 		{&roll,		"" }},
-	// system
-	{"cmd_list", 	{&cmd_list,	"" }},
-	{"help", 		{&help,		"" }},
-	{"quit", 		{&quit,		"" }},	
-	// other
-	{"react",		{&react,	"" }},
-	{"reluct",		{&reluct,	"" }},
-	{"power_IV",	{&power_IV,	"" }},
-	{"power_VR",	{&power_VR,	"" }}
-	*/
-};
+	unsigned int i;
+	if (to_match.length() > in_string.length())
+	{
+		return 0;
+	}
+	for (i = 0; i < to_match.length(); i ++)
+	{
+		if (to_match[i] != in_string[i])
+		{
+			return 0;
+		}
+	}
+	if ((i == in_string.length()) || !isalpha(in_string[i]))
+	{
+		return i;
+	}
+	return 0;
+}
 
 unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx)
 {
@@ -79,27 +65,6 @@ unsigned int find_numbers(std::string command_line, std::list<struct token_list_
 		i++;
 	}
 	return 1;
-}
-
-unsigned int match_only_word(std::string in_string, std::string to_match)
-{
-	unsigned int i;
-	if (to_match.length() > in_string.length())
-	{
-		return 0;
-	}
-	for (i = 0; i < to_match.length(); i ++)
-	{
-		if (to_match[i] != in_string[i])
-		{
-			return 0;
-		}
-	}
-	if ((i == in_string.length()) || !isalpha(in_string[i]))
-	{
-		return i;
-	}
-	return 0;
 }
 
 unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx)
@@ -156,16 +121,6 @@ unsigned int find_command_words(std::string command_line, std::list<struct token
 		return 0;
 	} 
 }
-
-
-
-
-
-
-
-
-
-
 
 unsigned int find_number(std::string line, std::list<struct token_list_node> * token_list)
 {
@@ -229,37 +184,163 @@ unsigned int find_command_word(std::string line, std::list<struct token_list_nod
 		return node.length;
 	} 
 }
+*/
 
-unsigned int tokenize(std::string line, std::list<struct token_list_node> * token_list)
+unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * token_list)
 {
 	unsigned int i = 0;
 	unsigned int length = 0;
+
+	struct token_list_node node;
+
 	while (i < line.length())
 	{
-		if (isdigit(line[i]) || line[i] == '-' || line[i] == '+')
+		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
 		{
-			if (!(length = find_number(line.substr(i), token_list)))
+			node.is == NUMBER;
+			try
 			{
+				node.number = std::stod(&line[i], (std::size_t *)length);
+			}
+			catch (const std::invalid_argument * error)
+			{
+				std::cerr << "Error: Malformed number." << std::endl;
 				return 0;
 			}
-			i += length;
-		}
-		else if (isalpha(line[i]))
-		{
-			if (!(length = find_command_word(line.substr(i), token_list)))
+			catch (const std::out_of_range * error)
 			{
+				std::cerr << "Error: Number out of range." << std::endl;
 				return 0;
 			}
+			token_list->push_back(node);
 			i += length;
 		}
-		else if (line[i] == ' ')
+		else if (isalpha(line[i]) || (line[i] == '_'))
 		{
-			i ++;
+			node.is = COMMAND_WORD;
+			node.cmd_string.clear();
+			node.cmd_string.append({line[i]});
+			while(isalpha(line[i]) || isdigit(line[i]) || (line[i] == '_'))
+			{
+				node.cmd_string.append({line[i]});
+				i ++;
+			}
+			token_list->push_back(node);
 		}
 		else
 		{
-			std::cerr << "Error: unidentified character " << line[i] << std::endl;
-			return 0;
+			switch (line[i])
+			{
+				case ' ':
+				i ++;
+				break;
+
+				default:
+				std::cerr << "Error: unidentified character " << line[i] << std::endl;
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> * token_list)
+{
+	unsigned int i = 0;
+	unsigned int length = 0;
+
+	struct token_list_node node;
+
+	while (i < line.length())
+	{
+		if (isdigit(line[i]) || (line[i] == '-') || (line[i] == '+'))
+		{
+			node.is == NUMBER;
+			try
+			{
+				node.number = std::stod(&line[i], (std::size_t *)length);
+			}
+			catch (const std::invalid_argument * error)
+			{
+				if ((line[i] == '-') || (line[i] == '+'))
+				{
+					break;
+				}
+				else
+				{
+					std::cerr << "Error: Malformed number." << std::endl;
+					return 0;
+				}
+			}
+			catch (const std::out_of_range * error)
+			{
+				std::cerr << "Error: Number out of range." << std::endl;
+				return 0;
+			}
+			token_list->push_back(node);
+			i += length;
+		}
+		else
+		{
+			switch (line[i])
+			{
+				case '+':
+				node.is = OPERATOR;
+				node.op = ADD;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '-':
+				node.is = OPERATOR;
+				node.op = SUB;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '*':
+				node.is = OPERATOR;
+				node.op = MUL;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '/':
+				node.is = OPERATOR;
+				node.op = DIV;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '^':
+				node.is = OPERATOR;
+				node.op = DIV;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case '(':
+				node.is = SEPARATOR;
+				node.sep = OPEN_EXPRESSION;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case ')':
+				node.is = SEPARATOR;
+				node.sep = CLOSE_EXPRESSION;
+				token_list->push_back(node);
+				i++;
+				break;
+
+				case ' ':
+				i ++;
+				break;
+			
+				default:
+				std::cerr << "Error: unidentified character " << line[i] << std::endl;
+				return 0;
+			}
 		}
 	}
 	return 1;

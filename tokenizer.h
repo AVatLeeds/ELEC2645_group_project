@@ -12,7 +12,8 @@ enum operators
 	SUB,
 	MUL,
 	DIV,
-	POW,
+	POW
+	/*
 	SQUARE_ROOT,
 	EQUAL,
 	UNEQUAL,
@@ -20,10 +21,9 @@ enum operators
 	GREATER_THAN,
 	LESS_THAN_OR_EQUAL,
 	GREATER_THAN_OR_EQUAL,
+	*/
 };
 // things to add: arrays? assignment operator? bitwise logical operations? pointers?
-
-//std::list<std::string> operators = {"+", "-", "*", "/", "^", "_/", "=", "/=", "<", ">", "<=", ">=", "(", ")", "{", "}"};
 
 enum separators
 {
@@ -32,16 +32,6 @@ enum separators
 	OPEN_COMMAND,
 	CLOSE_COMMAND
 };
-
-//std::list<std::string> separators = {"(", ")", "[", "]"};
-
-struct command_info
-{
-	void (*function)(std::list<double> *);
-	std::string description;
-};
-
-extern std::map<std::string, struct command_info> command_map;
 
 enum token_type
 {
@@ -54,10 +44,7 @@ enum token_type
 struct token_list_node
 {
 	enum token_type is;
-	std::string literal_string; // for debug only
-	unsigned int index;
-	unsigned int length;
-	struct command_info cmd_word;
+	std::string cmd_string;
 	double number;
 	enum operators op;
 	enum separators sep;
@@ -66,7 +53,8 @@ struct token_list_node
 //unsigned int find_numbers(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
 //unsigned int find_command_words(std::string command_line, std::list<struct token_list_node> * token_list, unsigned int start_idx);
 
-unsigned int tokenize(std::string line, std::list<struct token_list_node> * token_list);
+unsigned int tokenize_RP(std::string line, std::list<struct token_list_node> * token_list);
+unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> * token_list);
 
 //unsigned int RP_tokenize(std::string command_line, std::list<struct token_list_node> * token_list);
 
