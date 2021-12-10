@@ -23,7 +23,7 @@ void print_token_list(std::list<struct token_list_node> list)
 		switch (list_iter->is)
 		{
 			case COMMAND_WORD:
-			std::cout << list_iter->literal_string << " -> ";
+			std::cout << list_iter->cmd_string << " -> ";
 			break;
 
 			case NUMBER:
@@ -73,7 +73,7 @@ int main()
 					{
 						index_closed = i;
 						command_expression = command_line.substr((index_opened + 1), (index_closed - index_opened - 1));
-						if (tokenize(command_expression, &token_list_1))
+						if (tokenize_RP(command_expression, &token_list_1))
 						{
 							print_token_list(token_list_1);
 						}
