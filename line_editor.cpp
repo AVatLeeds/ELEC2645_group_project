@@ -36,7 +36,7 @@ void cursor_to_column(unsigned int column)
 
 std::list<std::string> cmd_history;
 std::list<std::string>::iterator cmd_history_ptr = cmd_history.begin();
-std::string prompt = "-> ";
+std::string prompt = "Command: ";
 std::string cmd_line;
 
 bool edit_flag, insert_mode;
