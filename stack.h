@@ -7,7 +7,7 @@
 
 
 class stack_class {
-	
+
 	public:
 	//constructors
 	stack_class();
@@ -68,44 +68,44 @@ class stack_class {
 	std::map<std::string, struct command_info> command_map
 	{
 		// arithmetic
-		{"add",			{&add,		"" }},
-		{"sub",			{&subtract,	"" }},
-		{"mul",			{&multiply,	"" }},
-		{"div",			{&divide,	"" }},
-		{"pow",			{&power,	"" }},
-		{"pow",			{&root,		"" }},
-		{"mod",			{&modulus,	"" }},
-		{"abs",			{&absolute,	"" }},
+		{"add",			{&add,		"Adds two numbers." }},
+		{"sub",			{&subtract,	"Subtracts two numbers." }},
+		{"mul",			{&multiply,	"Multiplies two numbers." }},
+		{"div",			{&divide,	"Divides two numbers." }},
+		{"pow",			{&power,	"Raises one number to the power of another." }},
+		{"root",		{&root,		"Calculates the nth root of the first number based on the second." }},
+		{"mod",			{&modulus,	"Finds the modulus of the first number given the second." }},
+		{"abs",			{&absolute,	"Finds the absolute value of a number." }},
 		// logical
-		{"and",			{&AND,		"" }},
-		{"or",			{&OR,		"" }},
-		{"not",			{&NOT,		"" }},
-		{"nor",			{&NAND,		"" }},
-		{"nand",		{&NOR,		"" }},
-		{"xor",			{&XOR,		"" }},
+		{"and",			{&AND,		"Logical AND of two number." }},
+		{"or",			{&OR,		"Logical OR of two number." }},
+		{"not",			{&NOT,		"Logical NOT of a number." }},
+		{"nand",		{&NAND,		"Logical NAND of two number." }},
+		{"nor",			{&NOR,		"Logical NOR of two number." }},
+		{"xor",			{&XOR,		"Logical XOR of two number." }},
 		// stack manipulation
-		{"dup", 		{&clear,		"" }},
-		{"dup", 		{&dup,			"" }},
-		{"swap", 		{&swap,			"" }},
-		{"push", 		{&stack_push,	"" }},
-		{"pop", 		{&stack_pop,	"" }},
-		{"roll", 		{&roll,			"" }},
+		{"dup", 		{&clear,		"Clears the stack." }},
+		{"dup", 		{&dup,			"Duplicates the last number on the stack." }},
+		{"swap", 		{&swap,			"Swaps the last two numbers on the stack." }},
+		{"push", 		{&stack_push,	"Pushed a number on the stack." }},
+		{"pop", 		{&stack_pop,	"Removes the number at the top of the stack." }},
+		{"roll", 		{&roll,			"Rolls the numbers on the stack so that the first is now the last." }},
 		// system
-		{"cmd_list", 	{&cmd_list,	"" }},
-		{"help", 		{&help,		"" }},
-		{"quit", 		{&quit,		"" }},
+		{"cmd_list", 	{&cmd_list,	"Prints a helpful list of the commands and their descriptions :)." }},
+		{"help", 		{&help,		"Displays a help screen with useful information." }},
+		{"quit", 		{&quit,		"Quits the program." }},
 		// constants
-		{"_pi",			{&pi,				""}},
-		{"_h",			{&plank,			""}},
-		{"_h_bar",		{&reduced_plank,	""}},
-		{"_kb",			{&boltzmann,		""}},
-		{"_e",			{&elec_charge,		""}},
-		{"_m0",			{&elec_rest_mass,	""}},
+		{"_pi",			{&pi,				"Puts Pi on the top of the stack."}},
+		{"_h",			{&plank,			"Puts the Plank constant on the top of the stack."}},
+		{"_h_bar",		{&reduced_plank,	"Puts the reduced Plank constant on the top of the stack."}},
+		{"_kb",			{&boltzmann,		"Puts the Boltzmann constant on the top of the stack."}},
+		{"_e",			{&elec_charge,		"Puts the electron charge on the top of the stack."}},
+		{"_m0",			{&elec_rest_mass,	"Puts the rest mass of the elctron on the top of the stack."}},
 		// other
-		{"quadratic_formula_positive",	{&quadratic_formula_1,	""}},
-		{"quadratic_formula_negative",	{&quadratic_formula_2,	""}},
-		{"electron_energy",				{&electron_E,			""}},
-		{"effective_electron_energy",	{&eff_electron_E,		""}}
+		{"quadratic_formula_positive",	{&quadratic_formula_1,	"Calculates quadratic formula using (-b + sqrt(b^2 - 4ac)) / 2a"}},
+		{"quadratic_formula_negative",	{&quadratic_formula_2,	"Calculates quadratic formula using (-b - sqrt(b^2 - 4ac)) / 2a"}},
+		{"electron_energy",				{&electron_E,			"Calculates electron energy given wave vector, k, and electron effective mass, m_e"}},
+		{"effective_electron_energy",	{&eff_electron_E,		"Calculates electron energy given wave vector, k, and electron effective mass, m_e, taking into account bandgap energy Eg"}}
 	};
 };
 
