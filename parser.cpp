@@ -104,7 +104,7 @@ for (int i=0;i<=OpLoc;i++)
     }else
      {
       while(OpArr[location+1]==0.0)
-      {std::cout<<"err";
+      {
         location++;
       } b=NumbArr[location+1];
      }
