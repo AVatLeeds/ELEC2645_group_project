@@ -5,14 +5,6 @@
 #include <map>
 #include "tokenizer.h"
 
-enum line_type {EXPRESSION, COMMAND_SEQUENCE};
-
-struct line_section
-{
-	enum line_type type;
-	std::string line;
-};
-
 void print_token_list(std::list<struct token_list_node> list)
 {
 	std::list<struct token_list_node>::iterator list_iter = list.begin();
@@ -246,31 +238,35 @@ unsigned int tokenize_infix(std::string line, std::list<struct token_list_node> 
 	return 1;
 }
 
-unsigned int tokenize(std::string line, std::list<struct token_list_node> * token_list)
+unsigned int tokenize(std::string line, std::list<struct token_list_section> * list_sections)
 {
 	unsigned int i;
 	int bracket_count = 0;
+	std::string placeholder;
 
-	struct line_section line_section;
-	line_section.type = COMMAND_SEQUENCE;
-
-	std::list<struct line_section> line_sections;
+	struct token_list_section list_section;
+	list_section.type = COMMAND_SEQUENCE;
 	
 	for (i = 0; i < line.length(); i ++)
 	{
-		line_section.line.append({line[i]});
+		placeholder.append({line[i]});
 
 		if (line[i] == '(')
 		{
 			if (!bracket_count)
 			{
-				line_section.line.pop_back();
-				if (i && !line_section.line.empty())
+				placeholder.pop_back();
+				if (i && !placeholder.empty())
 				{
-					line_sections.push_back(line_section);
-					line_section.line.clear();
+					if (!tokenize_RP(placeholder, &list_section.token_sub_list))
+					{
+						return 0;
+					}
+					list_sections->push_back(list_section);
+					placeholder.clear();
+					list_section.token_sub_list.clear();
 				}
-				line_section.type = EXPRESSION;
+				list_section.type = EXPRESSION;
 			}
 			bracket_count ++;
 		}
@@ -279,10 +275,15 @@ unsigned int tokenize(std::string line, std::list<struct token_list_node> * toke
 			bracket_count --;
 			if (bracket_count == 0)
 			{
-				line_section.line.pop_back();
-				line_sections.push_back(line_section);
-				line_section.line.clear();
-				line_section.type = COMMAND_SEQUENCE;
+				placeholder.pop_back();
+				if (!tokenize_infix(placeholder, &list_section.token_sub_list))
+				{
+					return 0;
+				}
+				list_sections->push_back(list_section);
+				placeholder.clear();
+				list_section.token_sub_list.clear();
+				list_section.type = COMMAND_SEQUENCE;
 			}
 		}
 	}
@@ -297,31 +298,13 @@ unsigned int tokenize(std::string line, std::list<struct token_list_node> * toke
 		std::cerr << "Error: Missing opening bracket in mathematical expression." << std::endl;
 		return 0;
 	}
-	else if (!line_section.line.empty())
+	else if (!placeholder.empty())
 	{
-		line_sections.push_back(line_section);
-	}
-
-	std::list<struct line_section>::iterator line_sections_iter = line_sections.begin();
-	while (line_sections_iter != line_sections.end())
-	{
-		switch (line_sections_iter->type)
+		if (!tokenize_RP(placeholder, &list_section.token_sub_list))
 		{
-			case EXPRESSION:
-			if (!tokenize_infix(line_sections_iter->line, token_list))
-			{
-				return 0;
-			}
-			break;
-
-			case COMMAND_SEQUENCE:
-			if (!tokenize_RP(line_sections_iter->line, token_list))
-			{
-				return 0;
-			}
-			break;
+			return 0;
 		}
-		line_sections_iter ++;
+		list_sections->push_back(list_section);
 	}
 	return 1;
 }

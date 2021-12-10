@@ -8,14 +8,9 @@
 #include "parser.h"
 
 std::string command_line;
-unsigned int i;
-int bracket_count = 0;
-bool expression_flag = false;
-unsigned int index_opened;
-unsigned int index_closed;
-std::string command_expression;
 bool run = true;
-std::list<struct token_list_node> token_list_1;
+std::list<struct token_list_section> token_lists;
+
 
 int main()
 {
@@ -27,7 +22,14 @@ int main()
 			command_line = get_line();
 
 
-			tokenize(command_line, &token_list_1);
+			tokenize(command_line, &token_lists);
+			std::list<struct token_list_section>::iterator lists_iter = token_lists.begin();
+			while (lists_iter != token_lists.end())
+			{
+				print_token_list(lists_iter->token_sub_list);
+				lists_iter ++;
+			}
+			token_lists.clear();
 
 		}
         disable_raw_mode();
