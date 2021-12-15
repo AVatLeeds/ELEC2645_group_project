@@ -1,5 +1,9 @@
 # ELEC 2645 Embedded systems - group project
 
+### To compile this project:
+
+g++ -Wall terminal_control.cpp line_editor.cpp tokenizer.cpp RP_parser.cpp parser.cpp parser_wrapper.cpp stack.cpp main.cpp -o calculator.exec
+
 ## Scope:
 
 From the unit 2 group project page
@@ -24,3 +28,9 @@ I suggest, for ease of implementation, that we use [Reverse Polish notation](htt
 
 -   Platform agnosticism (can be easily ported to any system, including embedded systems).
 -   POSIX compliant control code interface (complies with [BS ISO-IEC 6429:1992](https://shop.bsigroup.com/products/information-technology-control-functions-for-coded-character-sets)).
+
+---
+
+## License
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
