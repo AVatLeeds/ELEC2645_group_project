@@ -20,7 +20,7 @@ unsigned int stack_class::run_command(std::string command_string)
 	cmd_map_iter = command_map.find(command_string); 
 	if (cmd_map_iter != command_map.end())
 	{
-		(this->*cmd_map_iter->second.function)(); // wtf is this syntax! Madness.
+		(this->*cmd_map_iter->second.function)();
 		if (status == "OK")
 		{
 			return 1;
