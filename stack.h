@@ -25,6 +25,10 @@ class stack_class {
 	void divide();
 	void power();
 	void root();
+	void sqrt();
+	void logn();
+	void log10();
+	void log2();
 	void modulus();
 	void absolute();
 	// logical
@@ -51,7 +55,9 @@ class stack_class {
 	void reduced_plank();
 	void boltzmann();
 	void elec_charge();
-	void elec_rest_mass(); 
+	void elec_rest_mass();
+	void permitivity_fs();
+	void light_speed();
 	//other
 	void quadratic_formula_1();
 	void quadratic_formula_2();
@@ -76,6 +82,10 @@ class stack_class {
 		{"div",			{&stack_class::divide,	"Divides two numbers." }},
 		{"pow",			{&stack_class::power,	"Raises one number to the power of another." }},
 		{"root",		{&stack_class::root,		"Calculates the nth root of the first number based on the second." }},
+		{"sqrt",		{&stack_class::sqrt,		"Calculates the square root of the first number on the stack." }},
+		{"logn",		{&stack_class::logn,		"Calculates the natural logarithm of the first number on the stack." }},
+		{"log10",		{&stack_class::log10,		"Calculates the base 10 logarithm of the first number on the stack." }},
+		{"log2",		{&stack_class::log2,		"Calculates the base 2 logarithm of the first number on the stack." }},
 		{"mod",			{&stack_class::modulus,	"Finds the modulus of the first number given the second." }},
 		{"abs",			{&stack_class::absolute,	"Finds the absolute value of a number." }},
 		// logical
@@ -101,8 +111,10 @@ class stack_class {
 		{"_h",			{&stack_class::plank,			"Puts the Plank constant on the top of the stack."}},
 		{"_h_bar",		{&stack_class::reduced_plank,	"Puts the reduced Plank constant on the top of the stack."}},
 		{"_kb",			{&stack_class::boltzmann,		"Puts the Boltzmann constant on the top of the stack."}},
-		{"_e",			{&stack_class::elec_charge,		"Puts the electron charge on the top of the stack."}},
-		{"_m0",			{&stack_class::elec_rest_mass,	"Puts the rest mass of the elctron on the top of the stack."}},
+		{"_qe",			{&stack_class::elec_charge,		"Puts the electron charge on the top of the stack."}},
+		{"_m0",			{&stack_class::elec_rest_mass,	"Puts the rest mass of the electron on the top of the stack."}},
+		{"_e0",			{&stack_class::permitivity_fs,	"Puts the permitivity of free space on the top of the stack."}},
+		{"_c",			{&stack_class::light_speed,		"Puts the speed of light on the top of the stack."}},
 		// other
 		{"quadratic_formula_positive",	{&stack_class::quadratic_formula_1,	"Calculates quadratic formula using (-b + sqrt(b^2 - 4ac)) / 2a"}},
 		{"quadratic_formula_negative",	{&stack_class::quadratic_formula_2,	"Calculates quadratic formula using (-b - sqrt(b^2 - 4ac)) / 2a"}},

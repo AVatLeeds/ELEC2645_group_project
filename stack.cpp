@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #include <string>
 #include <cmath>
 #include "stack.h"
@@ -8,6 +9,8 @@
 #define BOLTZMANN		1.381E-23
 #define ELEC_CHARGE		1.602E-19
 #define ELEC_REST_MASS	9.109E-31
+#define PERMITIVITY_FS	8.854E-12
+#define LIGHT_SPEED		3.0E8
 
 stack_class::stack_class()
 {
@@ -174,6 +177,54 @@ void stack_class::root()
 			status = "OK";
 			return;
 		}
+	}
+	status = "Error: Not enough operands on stack.";
+}
+
+void stack_class::sqrt()
+{
+	double a;
+	if(pop(&a))
+	{
+		push(std::sqrt(a));
+		status = "OK";
+		return;
+	}
+	status = "Error: Not enough operands on stack.";
+}
+
+void stack_class::logn()
+{
+	double a;
+	if(pop(&a))
+	{
+		push(std::log(a));
+		status = "OK";
+		return;
+	}
+	status = "Error: Not enough operands on stack.";
+}
+
+void stack_class::log10()
+{
+	double a;
+	if(pop(&a))
+	{
+		push(std::log10(a));
+		status = "OK";
+		return;
+	}
+	status = "Error: Not enough operands on stack.";
+}
+
+void stack_class::log2()
+{
+	double a;
+	if(pop(&a))
+	{
+		push(std::log2(a));
+		status = "OK";
+		return;
 	}
 	status = "Error: Not enough operands on stack.";
 }
@@ -407,6 +458,16 @@ void stack_class::elec_charge()
 void stack_class::elec_rest_mass()
 {
 	stack.push_back(ELEC_REST_MASS);
+}
+
+void stack_class::permitivity_fs()
+{
+	stack.push_back(PERMITIVITY_FS);
+}
+
+void stack_class::light_speed()
+{
+	stack.push_back(LIGHT_SPEED);
 }
 
 // other
